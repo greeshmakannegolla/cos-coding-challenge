@@ -25,4 +25,29 @@ class Validator {
     }
     return null;
   }
+
+  static String? validateVin(String? vin) {
+    final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
+    if (vin == null) {
+      return null;
+    }
+    if (vin.isEmpty) {
+      return 'Please enter VIN';
+    }
+    if (vin.length != 17) {
+      return 'VIN must be exactly 17 characters';
+    }
+
+    if (!validCharacters.hasMatch(vin)) {
+      return 'Entered VIN contains invalid characters';
+    }
+
+    if (vin.toUpperCase().contains('I') ||
+        vin.toUpperCase().contains('O') ||
+        vin.toUpperCase().contains('U')) {
+      return 'VIN cannot contain I, O, U characters';
+    }
+
+    return null;
+  }
 }

@@ -1,7 +1,7 @@
 import 'package:caronsale/helpers/color_constants.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/helpers/validator.dart';
-import 'package:caronsale/screens/%20vehicle_inspection_list.dart';
+import 'package:caronsale/screens/vehicle_inspection_list.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {

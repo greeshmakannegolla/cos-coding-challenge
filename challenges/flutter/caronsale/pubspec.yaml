@@ -32,6 +32,7 @@ dependencies:
   
   email_validator: ^2.0.1
   flutter_rounded_date_picker: ^2.0.2
+  intl: ^0.17.0
 
 
   # The following adds the Cupertino Icons font to your application.

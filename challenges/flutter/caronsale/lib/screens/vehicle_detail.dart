@@ -2,6 +2,10 @@ import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/helpers/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:intl/intl.dart';
+
+import '../helpers/color_constants.dart';
 
 class VehicleDetail extends StatefulWidget {
   const VehicleDetail({Key? key}) : super(key: key);
@@ -14,6 +18,8 @@ class _VehicleDetailState extends State<VehicleDetail> {
   late TextEditingController _vehicleMakeController;
   late TextEditingController _vehicleModelController;
   late TextEditingController _vehicleIdentificationNumberController;
+  late TextEditingController _dateController;
+  late DateTime _entryDate;
 
   @override
   void initState() {
@@ -21,6 +27,8 @@ class _VehicleDetailState extends State<VehicleDetail> {
     _vehicleMakeController = TextEditingController();
     _vehicleModelController = TextEditingController();
     _vehicleIdentificationNumberController = TextEditingController();
+    _dateController = TextEditingController();
+    _entryDate = DateTime.now();
   }
 
   @override
@@ -28,6 +36,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
     _vehicleMakeController.dispose();
     _vehicleModelController.dispose();
     _vehicleIdentificationNumberController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
@@ -52,6 +61,61 @@ class _VehicleDetailState extends State<VehicleDetail> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  buildInputFormFieldWithIcon(
+                    context,
+                    Row(
+                      children: [
+                        Text("DATE",
+                            style: kInputformHeader.copyWith(fontSize: 14)),
+                        getMandatoryStar()
+                      ],
+                    ),
+                    const Icon(
+                      Icons.calendar_today_outlined,
+                      color: ColorConstants.kSecondaryTextColor,
+                      size: 18,
+                    ),
+                    _dateController,
+                    onTap: () async {
+                      DateTime today = DateTime.now();
+                      FocusScope.of(context).unfocus();
+                      await Future.delayed(const Duration(milliseconds: 100));
+                      var date = await showRoundedDatePicker(
+                        height: 300,
+                        context: context,
+                        initialDate: _entryDate,
+                        firstDate:
+                            today.subtract(const Duration(days: 365 * 10)),
+                        lastDate: today.add(const Duration(days: 365 * 3)),
+                        borderRadius: 16,
+                        styleDatePicker: MaterialRoundedDatePickerStyle(
+                            paddingMonthHeader: const EdgeInsets.all(12),
+                            textStyleMonthYearHeader: TextStyle(
+                                fontSize: 15,
+                                color: ColorConstants.kTextPrimaryColor
+                                    .withOpacity(0.8))),
+                        theme: ThemeData(
+                          primarySwatch: ColorConstants.kCalendarMaterialColor,
+                          // ignore: deprecated_member_use
+                          accentColor: ColorConstants.kSecondaryTextColor,
+                        ),
+                      );
+                      if (date == null) {
+                        return;
+                      }
+
+                      _entryDate = date;
+                      var local = _entryDate.toLocal();
+
+                      _dateController.text =
+                          DateFormat(' d MMM, ' 'yy').format(local);
+
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(
+                    height: 23,
+                  ),
                   buildInputFormField(
                       context,
                       Row(

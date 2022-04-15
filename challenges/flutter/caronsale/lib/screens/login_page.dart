@@ -1,7 +1,9 @@
 import 'package:caronsale/helpers/color_constants.dart';
+import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/helpers/validator.dart';
 import 'package:caronsale/screens/vehicle_inspection_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,7 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late TextEditingController _usernameController;
+  late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
   bool hidePassword = true;
@@ -22,13 +24,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
+    _emailController = TextEditingController();
     _passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -58,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _buildInputField(context, 'EMAIL', false,
-                          _usernameController, TextInputAction.next,
+                          _emailController, TextInputAction.next,
                           validator: Validator.validateEmail),
                       const SizedBox(
                         height: 20,
@@ -104,15 +106,29 @@ class _LoginPageState extends State<LoginPage> {
                                   color: ColorConstants.kTextPrimaryColor),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState?.validate() ?? false) {
-                              //TODO: Add authentication check
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const VehicleInspectionList()),
-                              );
+                              try {
+                                await FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(
+                                        email: _emailController.text,
+                                        password: _passwordController.text);
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const VehicleInspectionList()),
+                                );
+                              } on FirebaseAuthException catch (e) {
+                                if (e.code == 'user-not-found') {
+                                  showAlertDialog(context, 'Error',
+                                      'No user found for that email');
+                                } else if (e.code == 'wrong-password') {
+                                  showAlertDialog(context, 'Error',
+                                      'Wrong password provided for that user');
+                                }
+                              }
                             }
                           })
                     ],

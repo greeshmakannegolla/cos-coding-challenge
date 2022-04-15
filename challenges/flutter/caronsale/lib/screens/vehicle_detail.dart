@@ -94,8 +94,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
                     context,
                     Row(
                       children: [
-                        Text("DATE",
-                            style: kInputformHeader.copyWith(fontSize: 14)),
+                        const Text("DATE", style: kInputformHeader),
                         getMandatoryStar()
                       ],
                     ),

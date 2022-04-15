@@ -11,7 +11,6 @@ Widget buildInputFormFieldWithIcon(
   void Function(String)? onChanged,
   void Function()? onTap,
 }) {
-  //Function onTap
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -24,12 +23,7 @@ Widget buildInputFormFieldWithIcon(
         onTap: onTap,
         cursorColor: ColorConstants.kTextPrimaryColor,
         decoration: kFormFieldDecoration.copyWith(suffixIcon: suffixImage),
-        style: const TextStyle(
-          color: ColorConstants.kTextPrimaryColor,
-          fontSize: 14.66,
-          fontFamily: "Sen",
-          fontWeight: FontWeight.w400,
-        ),
+        style: kLoginTextFieldStyle,
         textAlignVertical: TextAlignVertical.center,
       ),
     ],
@@ -40,7 +34,6 @@ Widget buildInputFormField(
     context,
     Widget title,
     void Function(String text) onTextChange,
-    // bool isPasswordField,
     TextEditingController? controller,
     TextInputAction textInputAction,
     {String? Function(String?)? validator,

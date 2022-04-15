@@ -88,7 +88,7 @@ const kTextFieldContent = TextStyle(
 const kInputformHeader = TextStyle(
   color: ColorConstants.kFormTextHeaderColor,
   fontWeight: FontWeight.w700,
-  fontSize: 12,
+  fontSize: 14,
   fontFamily: "Sen",
 );
 

@@ -52,15 +52,30 @@ class _VehicleDetailState extends State<VehicleDetail> {
       },
       child: SafeArea(
         child: Scaffold(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: _getFAB(),
           body: Form(
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 60),
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(
+                      Icons.arrow_back_ios_rounded,
+                      color: ColorConstants.kTextPrimaryColor,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
                   buildInputFormFieldWithIcon(
                     context,
                     Row(
@@ -174,5 +189,27 @@ class _VehicleDetailState extends State<VehicleDetail> {
         ),
       ),
     );
+  }
+
+  _getFAB() {
+    return TextButton(
+        style: ButtonStyle(
+            backgroundColor:
+                MaterialStateProperty.all(ColorConstants.kActionButtonColor),
+            fixedSize: MaterialStateProperty.all(
+                Size(MediaQuery.of(context).size.width * 0.95, 55)),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            )),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 3),
+          child: Text(
+            "SAVE",
+            style: kSubHeader.copyWith(color: ColorConstants.kTextPrimaryColor),
+          ),
+        ),
+        onPressed: () {});
   }
 }

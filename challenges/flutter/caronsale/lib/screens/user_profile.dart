@@ -1,7 +1,6 @@
 import 'package:caronsale/helpers/color_constants.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/screens/change_password.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {

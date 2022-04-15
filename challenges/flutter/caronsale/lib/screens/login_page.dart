@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: ColorConstants.kLoginBackgroundColor,
+          backgroundColor: Colors.grey[400],
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
             child: Column(
@@ -154,33 +154,18 @@ class _LoginPageState extends State<LoginPage> {
           style: kLoginTextTitleStyle,
         ),
         const SizedBox(height: 10),
-        SizedBox(
-          height: 50,
-          child: TextFormField(
-            onFieldSubmitted: (_) {
-              int safetyCounter = 25;
-              while (FocusScope.of(context).focusedChild?.context?.widget
-                  is! EditableText) {
-                FocusScope.of(context).nextFocus();
-                safetyCounter--;
-                if (safetyCounter == 0) {
-                  break;
-                }
-              }
-            },
-            textInputAction: textInputAction,
-            controller: controller,
-            keyboardType: isPasswordField
-                ? TextInputType.text
-                : TextInputType.emailAddress,
-            obscureText: isPasswordField ? hidePassword : false,
-            cursorColor: ColorConstants.kTextPrimaryColor,
-            decoration: decoration,
-            style: kLoginTextFieldStyle,
-            textAlignVertical: TextAlignVertical.center,
-            validator: validator,
-            autocorrect: false,
-          ),
+        TextFormField(
+          textInputAction: textInputAction,
+          controller: controller,
+          keyboardType:
+              isPasswordField ? TextInputType.text : TextInputType.emailAddress,
+          obscureText: isPasswordField ? hidePassword : false,
+          cursorColor: ColorConstants.kTextPrimaryColor,
+          decoration: decoration,
+          style: kLoginTextFieldStyle,
+          textAlignVertical: TextAlignVertical.center,
+          validator: validator,
+          autocorrect: false,
         ),
       ],
     );

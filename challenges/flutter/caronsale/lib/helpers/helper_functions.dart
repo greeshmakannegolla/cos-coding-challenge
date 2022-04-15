@@ -60,17 +60,6 @@ Widget buildInputFormField(
         obscureText: obscureText,
         inputFormatters: textInputFormatter,
         textInputAction: textInputAction,
-        onFieldSubmitted: (_) {
-          int safetyCounter = 25;
-          while (FocusScope.of(context).focusedChild?.context?.widget
-              is! EditableText) {
-            FocusScope.of(context).nextFocus();
-            safetyCounter--;
-            if (safetyCounter == 0) {
-              break;
-            }
-          }
-        },
         keyboardType: keyboardType,
         readOnly: readOnly,
         showCursor: readOnly ? false : true,

@@ -48,7 +48,7 @@ const kLoginTextFieldStyle = TextStyle(
 );
 
 const kLoginTextTitleStyle = TextStyle(
-  color: ColorConstants.kAppBackgroundColor,
+  color: ColorConstants.kTextPrimaryColor,
   fontSize: 12.88,
   fontWeight: FontWeight.w700,
   fontFamily: "Sen",

@@ -1,3 +1,4 @@
+import 'package:caronsale/screens/user_profile.dart';
 import 'package:caronsale/screens/vehicle_detail.dart';
 import 'package:caronsale/screens/vehicle_inspection_card.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +50,12 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
                 children: [
                   InkWell(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => MyProfileScreen(),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const UserProfile(),
+                        ),
+                      );
                     },
                     child: const CircleAvatar(
                       // backgroundImage: CachedNetworkImageProvider(

@@ -70,7 +70,7 @@ class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
           ],
         ),
         const SizedBox(
-          height: 5.5,
+          height: 10,
         ),
       ],
     );

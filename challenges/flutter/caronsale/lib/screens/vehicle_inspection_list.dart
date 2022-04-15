@@ -1,4 +1,5 @@
 import 'package:caronsale/screens/vehicle_detail.dart';
+import 'package:caronsale/screens/vehicle_inspection_card.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/color_constants.dart';
@@ -40,8 +41,71 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
             ),
           ),
           backgroundColor: ColorConstants.kAppBackgroundColor,
-          body: Column(
-            children: [],
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 28),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => MyProfileScreen(),
+                      //   ),
+                      // );
+                    },
+                    child: const CircleAvatar(
+                      // backgroundImage: CachedNetworkImageProvider(
+                      //     Global.currentUser.imageUrl),
+                      backgroundColor: Colors.blue,
+                      radius: 28,
+                      // : CircleAvatar(
+                      //     backgroundColor: ColorConstants.buttonColor,
+                      //     child: Text(
+                      //       Global.currentUser.firstName[0] +
+                      //           Global.currentUser.lastName[0],
+                      //       style: buttonStyle.copyWith(
+                      //         fontSize: 12,
+                      //       ),
+                      //     ),
+                      //   ), //TODO: Add this if no user profile image
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: 15, //TODO: Change to list length
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 12),
+                        child: InkWell(
+                            onTap: () {
+                              //Navigation to the selected vehical inspection
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) =>
+                              //           RestaurantDetailScreen(
+                              //               _filteredRestaurantList[
+                              //                   index])),
+                              // );
+                            },
+                            child:
+                                const VehicleInspectionCard() //TODO: Change to selected card
+                            // (
+                            // _filteredRestaurantList[index],
+                            // key: UniqueKey(),
+                            //)
+                            ),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),

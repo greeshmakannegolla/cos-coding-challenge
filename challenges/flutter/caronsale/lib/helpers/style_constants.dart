@@ -91,3 +91,17 @@ const kInputformHeader = TextStyle(
   fontSize: 12,
   fontFamily: "Sen",
 );
+
+const kHeader = TextStyle(
+  fontFamily: "Sen",
+  fontWeight: FontWeight.w700,
+  color: ColorConstants.kTextPrimaryColor,
+  fontSize: 18,
+);
+
+const kSecondaryHeader = TextStyle(
+  fontFamily: "Sen",
+  fontWeight: FontWeight.w400,
+  color: ColorConstants.kTextPrimaryColor,
+  fontSize: 15,
+);

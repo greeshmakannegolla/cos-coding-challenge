@@ -3,7 +3,6 @@ import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/screens/change_password.dart';
 import 'package:caronsale/screens/login_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

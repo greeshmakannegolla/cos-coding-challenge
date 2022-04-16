@@ -34,6 +34,8 @@ class _VehicleDetailState extends State<VehicleDetail> {
 
   XFile? imageFile;
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +83,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: _getFAB(context),
           body: Form(
+            key: _formKey,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40),
@@ -359,49 +362,55 @@ class _VehicleDetailState extends State<VehicleDetail> {
           ),
         ),
         onPressed: () async {
-          _vehicleDetailModel.date = _entryDate;
-          _vehicleDetailModel.vin = _vehicleIdentificationNumberController.text;
-          _vehicleDetailModel.vehicleMake = _vehicleMakeController.text;
-          _vehicleDetailModel.vehicleModel = _vehicleModelController.text;
+          if ((_formKey.currentState?.validate() ?? false) &&
+              _dateController.text.isNotEmpty) {
+            _vehicleDetailModel.date = _entryDate;
+            _vehicleDetailModel.vin =
+                _vehicleIdentificationNumberController.text;
+            _vehicleDetailModel.vehicleMake = _vehicleMakeController.text;
+            _vehicleDetailModel.vehicleModel = _vehicleModelController.text;
 
-          if (!_isEdit) {
-            if (imageFile != null) {
-              final file = File(imageFile!.path);
-              final imageName =
-                  '${DateTime.now().millisecondsSinceEpoch}${path.extension(imageFile!.path)}';
-              final firebaseStorageRef =
-                  FirebaseStorage.instance.ref().child('images/$imageName');
-
-              try {
-                final uploadTask = await firebaseStorageRef.putFile(file);
-                final _fileURL = await uploadTask.ref.getDownloadURL();
-                _vehicleDetailModel.vehiclePhotoUrl = _fileURL;
-              } on FirebaseException catch (e) {
-                showAlertDialog(context, 'Error', e.toString());
-              }
-            }
-          } else {
-            // _vehicleDetailModel.vehiclePhotoUrl =
-            //     _vehicleDetailModel.vehiclePhotoUrl; //TODO: Send right param
-          }
-
-          try {
             if (!_isEdit) {
-              await FirebaseFirestore.instance
-                  .collection('vehicles')
-                  .doc()
-                  .set(_vehicleDetailModel.toJSON());
-            } else {
-              await FirebaseFirestore.instance
-                  .collection('vehicles')
-                  .doc(_vehicleDetailModel.id)
-                  .update(_vehicleDetailModel.toJSON());
-            }
-          } on Exception catch (e) {
-            showAlertDialog(context, 'Error', e.toString());
-          }
+              if (imageFile != null) {
+                final file = File(imageFile!.path);
+                final imageName =
+                    '${DateTime.now().millisecondsSinceEpoch}${path.extension(imageFile!.path)}';
+                final firebaseStorageRef =
+                    FirebaseStorage.instance.ref().child('images/$imageName');
 
-          Navigator.pop(context);
+                try {
+                  final uploadTask = await firebaseStorageRef.putFile(file);
+                  final _fileURL = await uploadTask.ref.getDownloadURL();
+                  _vehicleDetailModel.vehiclePhotoUrl = _fileURL;
+                } on FirebaseException catch (e) {
+                  showAlertDialog(context, 'Error', e.toString());
+                }
+              }
+            } else {
+              // _vehicleDetailModel.vehiclePhotoUrl =
+              //     _vehicleDetailModel.vehiclePhotoUrl; //TODO: Send right param
+            }
+
+            try {
+              if (!_isEdit) {
+                await FirebaseFirestore.instance
+                    .collection('vehicles')
+                    .doc()
+                    .set(_vehicleDetailModel.toJSON());
+              } else {
+                await FirebaseFirestore.instance
+                    .collection('vehicles')
+                    .doc(_vehicleDetailModel.id)
+                    .update(_vehicleDetailModel.toJSON());
+              }
+            } on Exception catch (e) {
+              showAlertDialog(context, 'Error', e.toString());
+            }
+
+            Navigator.pop(context);
+          } else {
+            showAlertDialog(context, 'Error', 'Please verify the field(s)');
+          }
         });
   }
 }

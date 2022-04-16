@@ -30,19 +30,14 @@ Widget buildInputFormFieldWithIcon(
   );
 }
 
-Widget buildInputFormField(
-    context,
-    Widget title,
-    void Function(String text) onTextChange,
-    TextEditingController? controller,
-    TextInputAction textInputAction,
+Widget buildInputFormField(context, Widget title,
+    TextEditingController? controller, TextInputAction textInputAction,
     {String? Function(String?)? validator,
     InputDecoration decoration = kFormFieldDecoration,
     int maxLines = 1,
     bool readOnly = false,
     TextInputType keyboardType = TextInputType.text,
-    bool obscureText = false,
-    List<TextInputFormatter>? textInputFormatter}) {
+    int? maxLength}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -50,19 +45,17 @@ Widget buildInputFormField(
       const SizedBox(height: 10),
       TextFormField(
         maxLines: maxLines,
-        obscureText: obscureText,
-        inputFormatters: textInputFormatter,
         textInputAction: textInputAction,
         keyboardType: keyboardType,
         readOnly: readOnly,
         showCursor: readOnly ? false : true,
         controller: controller,
-        onChanged: onTextChange,
         cursorColor: ColorConstants.kTextPrimaryColor,
         validator: validator,
         decoration: decoration,
         style: kTextFieldContent,
         textAlignVertical: TextAlignVertical.center,
+        maxLength: maxLength,
       ),
     ],
   );

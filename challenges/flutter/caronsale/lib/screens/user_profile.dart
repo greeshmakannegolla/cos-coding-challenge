@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:caronsale/helpers/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/string_constants.dart';
@@ -6,7 +9,10 @@ import 'package:caronsale/screens/change_password.dart';
 import 'package:caronsale/screens/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 class UserProfile extends StatefulWidget {
   const UserProfile({Key? key}) : super(key: key);
@@ -17,24 +23,42 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   int? _groupValue;
+  String? imageUploadMode;
+
+  XFile? imageFile;
+  String? _profilePicUrl;
+  StreamSubscription? _streamSubscription;
 
   @override
   void initState() {
     super.initState();
 
-    FirebaseFirestore.instance
+    _streamSubscription = FirebaseFirestore.instance
         .collection('users')
         .doc(kEmail)
-        .get()
-        .then((value) {
-      var preferredImagePicker = value.data()?['preferredImagePicker'];
+        .snapshots()
+        .listen((value) {
+      var data = value.data() ?? {};
+      var preferredImagePicker = data['preferredImagePicker'];
+
       if (preferredImagePicker.toLowerCase() == "gallery") {
         _groupValue = 0;
+        imageUploadMode = 'gallery';
       } else {
         _groupValue = 1;
+        imageUploadMode = 'camera';
       }
-      setState(() {});
+      _profilePicUrl = data['profileUrl'];
+      if (mounted) {
+        setState(() {});
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -70,23 +94,67 @@ class _UserProfileState extends State<UserProfile> {
               ),
               Center(
                 child: Column(
-                  children: const [
-                    // Global.currentUser.imageUrl.isNotEmpty
-                    //     ?
-                    //     CircleAvatar(
-                    //         radius: 50,
-                    //         backgroundImage: CachedNetworkImageProvider(
-                    //             Global.currentUser.imageUrl),
-                    //       )
-                    //     :
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors
-                          .blue, //TODO: Fetch from Firebase and give default icon if no image
-
-                      // backgroundImage: AssetImage(propertyPlaceholder),
+                  children: [
+                    (_profilePicUrl != null && _profilePicUrl!.isNotEmpty)
+                        ? CircleAvatar(
+                            radius: 60,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: Image.network(
+                                _profilePicUrl!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        : CircleAvatar(
+                            radius: 60,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: Image.asset(
+                                kAccount,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                    const SizedBox(
+                      height: 15,
                     ),
-                    SizedBox(
+                    InkWell(
+                        onTap: () async {
+                          if (imageUploadMode == 'gallery') {
+                            await _openGallery(context);
+                          } else {
+                            _openCamera(context);
+                          }
+
+                          if (imageFile != null) {
+                            final file = File(imageFile!.path);
+                            final imageName =
+                                '${FirebaseAuth.instance.currentUser?.email?.split('@')[0]}${path.extension(imageFile!.path)}';
+                            final firebaseStorageRef = FirebaseStorage.instance
+                                .ref()
+                                .child('profileImage/$imageName');
+
+                            try {
+                              final uploadTask =
+                                  await firebaseStorageRef.putFile(file);
+                              final _fileURL =
+                                  await uploadTask.ref.getDownloadURL();
+
+                              FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(kEmail)
+                                  .update({'profileUrl': _fileURL});
+                            } on FirebaseException catch (e) {
+                              showAlertDialog(context, 'Error', e.toString());
+                            }
+                          }
+                        },
+                        child: const Text(
+                          'Change profile photo',
+                          style: kUnderlineHeader,
+                        )),
+                    const SizedBox(
                       height: 50,
                     ),
                   ],
@@ -223,5 +291,25 @@ class _UserProfileState extends State<UserProfile> {
     FirebaseFirestore.instance.collection('users').doc(kEmail).update({
       'preferredImagePicker': (_groupValue == 0) ? 'gallery' : 'camera'
     }); //TODO: Check if profile url also updates on change
+  }
+
+  Future<void> _openGallery(BuildContext context) async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile != null) {
+      imageFile = pickedFile;
+    }
+    //setState(() {});
+  }
+
+  Future<void> _openCamera(BuildContext context) async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+    );
+    if (pickedFile != null) {
+      imageFile = pickedFile;
+    }
+    //setState(() {});
   }
 }

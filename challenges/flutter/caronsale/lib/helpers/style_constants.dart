@@ -105,3 +105,11 @@ const kSecondaryHeader = TextStyle(
   color: ColorConstants.kTextPrimaryColor,
   fontSize: 15,
 );
+
+const kUnderlineHeader = TextStyle(
+  fontFamily: "Sen",
+  fontWeight: FontWeight.w600,
+  color: Colors.blue,
+  fontSize: 18,
+  decoration: TextDecoration.underline,
+);

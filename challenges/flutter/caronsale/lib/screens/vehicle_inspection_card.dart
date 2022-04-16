@@ -1,9 +1,13 @@
 import 'package:caronsale/helpers/string_constants.dart';
 import 'package:caronsale/helpers/style_constants.dart';
+import 'package:caronsale/models/vehicle_detail_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class VehicleInspectionCard extends StatefulWidget {
-  const VehicleInspectionCard({Key? key}) : super(key: key);
+  final VehicleDetailModel vehicleDetailModel;
+  const VehicleInspectionCard(this.vehicleDetailModel, {Key? key})
+      : super(key: key);
 
   @override
   State<VehicleInspectionCard> createState() => _VehicleInspectionCardState();
@@ -28,45 +32,50 @@ class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
             child: SizedBox(
               height: 230,
               width: double.infinity,
-              child: Image.asset(kDefaultVehicle,
-                  fit: BoxFit.fill), //TODO: fETCH imageURL FROM FIREBASE
+              child: widget.vehicleDetailModel.vehiclePhotoUrl.isEmpty
+                  ? Image.asset(kDefaultVehicle, fit: BoxFit.fill)
+                  : Image.network(widget.vehicleDetailModel.vehiclePhotoUrl,
+                      fit: BoxFit.fill),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
-            child: _getRestaurantInfo(),
+            child: _getVehicleInfo(),
           ),
         ],
       ),
     );
   }
 
-  Column _getRestaurantInfo() {
+  Column _getVehicleInfo() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 5.5),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  "ASD234569890GHJJK99", //TODO: fETCH vin FROM FIREBASE
-                  style: kHeader,
-                ),
-                Text('15 Apr, 2022',
-                    style: kSecondaryHeader) //TODO: fETCH date FROM FIREBASE
-              ]),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(
+              widget.vehicleDetailModel.vin,
+              style: kHeader,
+            ),
+            Text(
+                DateFormat("dd MMM, yyyy")
+                    .format(widget.vehicleDetailModel.date),
+                style: kSecondaryHeader)
+          ]),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text("German make",
-                style:
-                    kSecondaryHeader), //TODO: fETCH make FROM FIREBASE - Add row conditionally
-            Text("Q12",
-                style:
-                    kSecondaryHeader) //TODO: fETCH model FROM FIREBASE - Add row conditionally
+          children: [
+            widget.vehicleDetailModel.vehicleMake.isNotEmpty
+                ? Text(widget.vehicleDetailModel.vehicleMake,
+                    style: kSecondaryHeader)
+                : Container(),
+            widget.vehicleDetailModel.vehicleModel.isNotEmpty
+                ? Text(widget.vehicleDetailModel.vehicleModel,
+                    style: kSecondaryHeader)
+                : Container()
           ],
         ),
         const SizedBox(

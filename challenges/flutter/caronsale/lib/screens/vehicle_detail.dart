@@ -15,7 +15,8 @@ import 'package:path/path.dart' as path;
 import '../helpers/color_constants.dart';
 
 class VehicleDetail extends StatefulWidget {
-  const VehicleDetail({Key? key}) : super(key: key);
+  final VehicleDetailModel? vehicleDetailModel;
+  const VehicleDetail({Key? key, this.vehicleDetailModel}) : super(key: key);
 
   @override
   State<VehicleDetail> createState() => _VehicleDetailState();
@@ -27,6 +28,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
   late TextEditingController _vehicleIdentificationNumberController;
   late TextEditingController _dateController;
   late DateTime _entryDate;
+  bool _isEdit = false;
 
   VehicleDetailModel _vehicleDetailModel = VehicleDetailModel();
 
@@ -35,11 +37,23 @@ class _VehicleDetailState extends State<VehicleDetail> {
   @override
   void initState() {
     super.initState();
-    _vehicleMakeController = TextEditingController();
-    _vehicleModelController = TextEditingController();
-    _vehicleIdentificationNumberController = TextEditingController();
-    _dateController = TextEditingController();
-    _entryDate = DateTime.now();
+    if (widget.vehicleDetailModel != null) {
+      _isEdit = true;
+      _vehicleDetailModel.id = widget.vehicleDetailModel!.id;
+      _vehicleDetailModel = widget.vehicleDetailModel!;
+      // imageFile. = _vehicleDetailModel.vehiclePhotoUrl; //TODO: Get image
+    }
+    _vehicleMakeController = TextEditingController(
+        text: _isEdit ? _vehicleDetailModel.vehicleMake : '');
+    _vehicleModelController = TextEditingController(
+        text: _isEdit ? _vehicleDetailModel.vehicleModel : '');
+    _vehicleIdentificationNumberController =
+        TextEditingController(text: _isEdit ? _vehicleDetailModel.vin : '');
+    _dateController = TextEditingController(
+        text: _isEdit
+            ? DateFormat(' d MMM, ' 'yy').format(_vehicleDetailModel.date)
+            : '');
+    _entryDate = _isEdit ? _vehicleDetailModel.date : DateTime.now();
   }
 
   @override
@@ -350,27 +364,39 @@ class _VehicleDetailState extends State<VehicleDetail> {
           _vehicleDetailModel.vehicleMake = _vehicleMakeController.text;
           _vehicleDetailModel.vehicleModel = _vehicleModelController.text;
 
-          if (imageFile != null) {
-            final file = File(imageFile!.path);
-            final imageName =
-                '${DateTime.now().millisecondsSinceEpoch}${path.extension(imageFile!.path)}';
-            final firebaseStorageRef =
-                FirebaseStorage.instance.ref().child('images/$imageName');
+          if (!_isEdit) {
+            if (imageFile != null) {
+              final file = File(imageFile!.path);
+              final imageName =
+                  '${DateTime.now().millisecondsSinceEpoch}${path.extension(imageFile!.path)}';
+              final firebaseStorageRef =
+                  FirebaseStorage.instance.ref().child('images/$imageName');
 
-            try {
-              final uploadTask = await firebaseStorageRef.putFile(file);
-              final _fileURL = await uploadTask.ref.getDownloadURL();
-              _vehicleDetailModel.vehiclePhotoUrl = _fileURL;
-            } on FirebaseException catch (e) {
-              showAlertDialog(context, 'Error', e.toString());
+              try {
+                final uploadTask = await firebaseStorageRef.putFile(file);
+                final _fileURL = await uploadTask.ref.getDownloadURL();
+                _vehicleDetailModel.vehiclePhotoUrl = _fileURL;
+              } on FirebaseException catch (e) {
+                showAlertDialog(context, 'Error', e.toString());
+              }
             }
+          } else {
+            // _vehicleDetailModel.vehiclePhotoUrl =
+            //     _vehicleDetailModel.vehiclePhotoUrl; //TODO: Send right param
           }
 
           try {
-            await FirebaseFirestore.instance
-                .collection('vehicles')
-                .doc()
-                .set(_vehicleDetailModel.toJSON());
+            if (!_isEdit) {
+              await FirebaseFirestore.instance
+                  .collection('vehicles')
+                  .doc()
+                  .set(_vehicleDetailModel.toJSON());
+            } else {
+              await FirebaseFirestore.instance
+                  .collection('vehicles')
+                  .doc(_vehicleDetailModel.id)
+                  .update(_vehicleDetailModel.toJSON());
+            }
           } on Exception catch (e) {
             showAlertDialog(context, 'Error', e.toString());
           }

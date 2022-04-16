@@ -1,8 +1,10 @@
 import 'package:caronsale/helpers/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
+import 'package:caronsale/helpers/string_constants.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/screens/change_password.dart';
 import 'package:caronsale/screens/login_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -110,11 +112,7 @@ class _UserProfileState extends State<UserProfile> {
                           Radio(
                               value: 0,
                               groupValue: _groupValue,
-                              onChanged: (index) {
-                                setState(() {
-                                  _groupValue = index as int?;
-                                });
-                              }),
+                              onChanged: _onRadioButtonChanged),
                           Text(
                             'Gallery',
                             style: kHeader.copyWith(
@@ -123,11 +121,7 @@ class _UserProfileState extends State<UserProfile> {
                           Radio(
                               value: 1,
                               groupValue: _groupValue,
-                              onChanged: (index) {
-                                setState(() {
-                                  _groupValue = index as int?;
-                                });
-                              }),
+                              onChanged: _onRadioButtonChanged),
                           Text(
                             'Camera',
                             style: kHeader.copyWith(
@@ -200,5 +194,15 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ),
     );
+  }
+
+  void _onRadioButtonChanged(index) {
+    setState(() {
+      _groupValue = index as int?;
+    });
+
+    FirebaseFirestore.instance.collection('users').doc(kEmail).update({
+      'preferredImagePicker': (_groupValue == 0) ? 'gallery' : 'camera'
+    }); //TODO: Check if profile url also updates on change
   }
 }

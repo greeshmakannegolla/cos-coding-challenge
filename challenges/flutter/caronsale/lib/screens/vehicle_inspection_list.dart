@@ -20,12 +20,20 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
   @override
   void initState() {
     super.initState();
-    var vehiclesSnap =
-        FirebaseFirestore.instance.collection('vehicles').snapshots();
+    _getSnapshotData();
+  }
+
+  _getSnapshotData() {
+    var vehiclesSnap = FirebaseFirestore.instance
+        .collection('vehicles')
+        .orderBy("date", descending: true)
+        .snapshots();
 
     vehiclesSnap.listen((event) {
       vehiclesListDataModel = VehicleList.fromSnapshotList(event.docs);
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -57,7 +65,7 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
               ),
             ),
           ),
-          backgroundColor: ColorConstants.kAppBackgroundColor,
+          backgroundColor: ColorConstants.kFormBorderColor,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 28),
             child: Column(
@@ -76,7 +84,7 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
                   child: const CircleAvatar(
                     // backgroundImage: CachedNetworkImageProvider(
                     //     Global.currentUser.imageUrl),
-                    backgroundColor: Colors.blue,
+                    backgroundColor: ColorConstants.kActionButtonColor,
                     radius: 28,
                     // : CircleAvatar(
                     //     backgroundColor: ColorConstants.buttonColor,

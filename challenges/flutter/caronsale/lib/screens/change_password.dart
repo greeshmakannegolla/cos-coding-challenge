@@ -1,4 +1,5 @@
 import 'package:caronsale/helpers/color_constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/helper_functions.dart';
@@ -52,7 +53,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         child: Scaffold(
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: _getFAB(),
+            floatingActionButton: _getFAB(context),
             body: Form(
                 key: _formKey,
                 child: Padding(
@@ -95,7 +96,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                               getMandatoryStar()
                             ],
                           ),
-                          (newText) {},
                           true,
                           _currentPasswordController,
                           TextInputAction.next,
@@ -128,7 +128,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                               getMandatoryStar()
                             ],
                           ),
-                          (newText) {},
                           true,
                           _newPasswordController,
                           TextInputAction.next,
@@ -161,7 +160,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                               getMandatoryStar()
                             ],
                           ),
-                          (newText) {},
                           true,
                           _confirmNewPasswordController,
                           TextInputAction.done,
@@ -190,7 +188,6 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget _buildInputField(
     context,
     Widget title,
-    void Function(String text) onTextChange,
     bool isPasswordField,
     TextEditingController controller,
     TextInputAction textInputAction, {
@@ -208,36 +205,19 @@ class _ChangePasswordState extends State<ChangePassword> {
           autocorrect: autocorrect,
           controller: controller,
           textInputAction: textInputAction,
-          onFieldSubmitted: (_) {
-            int safetyCounter = 25;
-            while (FocusScope.of(context).focusedChild?.context?.widget
-                is! EditableText) {
-              FocusScope.of(context).nextFocus();
-              safetyCounter--;
-              if (safetyCounter == 0) {
-                break;
-              }
-            }
-          },
           keyboardType: keyboardType,
           obscureText: isPasswordField ? _hidePassword : false,
-          onChanged: onTextChange,
           cursorColor: ColorConstants.kTextPrimaryColor,
           validator: validator,
           decoration: decoration,
-          style: const TextStyle(
-            color: ColorConstants.kTextPrimaryColor,
-            fontSize: 14.66,
-            fontFamily: "Sen",
-            fontWeight: FontWeight.w400,
-          ),
+          style: kTextFieldContent,
           textAlignVertical: TextAlignVertical.center,
         ),
       ],
     );
   }
 
-  _getFAB() {
+  _getFAB(BuildContext context) {
     return TextButton(
         style: ButtonStyle(
             backgroundColor:
@@ -256,16 +236,25 @@ class _ChangePasswordState extends State<ChangePassword> {
             style: kSubHeader.copyWith(color: ColorConstants.kTextPrimaryColor),
           ),
         ),
-        onPressed: () {
-          //TODO: Check validation and save
+        onPressed: () async {
           if ((_formKey.currentState?.validate() ?? false) &&
               (_confirmNewPasswordController.text ==
                   _newPasswordController.text)) {
-            // _passwordViewModel.currentPassword =
-            //     _currentPasswordController.text;
-            // _passwordViewModel.newPassword =
-            //     _newPasswordController.text;
-            // _sendUpdatePasswordRequest(context);
+            try {
+              await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: FirebaseAuth.instance.currentUser?.email ?? '',
+                  password: _currentPasswordController.text);
+              FirebaseAuth.instance.currentUser
+                  ?.updatePassword(_newPasswordController.text);
+
+              var snackBar =
+                  const SnackBar(content: Text('Password reset successfully'));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+              Navigator.pop(context);
+            } on FirebaseException catch (e) {
+              showAlertDialog(context, "Error", e.toString());
+            }
           } else if (_confirmNewPasswordController.text !=
               _newPasswordController.text) {
             showAlertDialog(

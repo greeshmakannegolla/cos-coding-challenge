@@ -1,6 +1,10 @@
 import 'package:caronsale/helpers/color_constants.dart';
+import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/screens/change_password.dart';
+import 'package:caronsale/screens/login_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
@@ -82,7 +86,7 @@ class _UserProfileState extends State<UserProfile> {
                         height: 8,
                       ),
                       Text(
-                        'abc@gmail.com',
+                        FirebaseAuth.instance.currentUser?.email ?? '',
                         style: kHeader.copyWith(
                             fontSize: 20, fontWeight: FontWeight.w400),
                       )
@@ -174,7 +178,17 @@ class _UserProfileState extends State<UserProfile> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         )),
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        await FirebaseAuth.instance.signOut();
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (ctx) => const LoginPage()),
+                            (Route<dynamic> route) => false);
+                      } on FirebaseException catch (e) {
+                        showAlertDialog(context, 'Error', e.toString());
+                      }
+                    },
                     child: Text(
                       "Logout",
                       style: kHeader.copyWith(fontSize: 20),

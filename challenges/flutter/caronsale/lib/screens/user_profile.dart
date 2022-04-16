@@ -19,6 +19,25 @@ class _UserProfileState extends State<UserProfile> {
   int? _groupValue;
 
   @override
+  void initState() {
+    super.initState();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(kEmail)
+        .get()
+        .then((value) {
+      var preferredImagePicker = value.data()?['preferredImagePicker'];
+      if (preferredImagePicker.toLowerCase() == "gallery") {
+        _groupValue = 0;
+      } else {
+        _groupValue = 1;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(

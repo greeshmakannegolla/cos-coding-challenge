@@ -193,7 +193,6 @@ class _ChangePasswordState extends State<ChangePassword> {
     TextInputAction textInputAction, {
     String? Function(String?)? validator,
     InputDecoration decoration = kFormFieldDecoration,
-    bool autocorrect = false,
     TextInputType keyboardType = TextInputType.text,
   }) {
     return Column(
@@ -202,7 +201,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         title,
         const SizedBox(height: 10),
         TextFormField(
-          autocorrect: autocorrect,
+          autocorrect: false,
           controller: controller,
           textInputAction: textInputAction,
           keyboardType: keyboardType,

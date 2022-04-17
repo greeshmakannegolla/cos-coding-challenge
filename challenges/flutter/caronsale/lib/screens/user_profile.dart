@@ -5,8 +5,8 @@ import 'package:caronsale/helpers/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/string_constants.dart';
 import 'package:caronsale/helpers/style_constants.dart';
-import 'package:caronsale/screens/change_password.dart';
-import 'package:caronsale/screens/login_page.dart';
+import 'package:caronsale/screens/authentication/change_password_page.dart';
+import 'package:caronsale/screens/authentication/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -232,7 +232,7 @@ class _UserProfileState extends State<UserProfile> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ChangePassword()),
+                            builder: (context) => const ChangePasswordPage()),
                       );
                     },
                     child: Text(

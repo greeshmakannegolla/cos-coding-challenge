@@ -2,18 +2,18 @@ import 'package:caronsale/helpers/color_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../helpers/helper_functions.dart';
-import '../helpers/style_constants.dart';
-import '../helpers/validator.dart';
+import '../../helpers/helper_functions.dart';
+import '../../helpers/style_constants.dart';
+import '../../helpers/validator.dart';
 
-class ChangePassword extends StatefulWidget {
-  const ChangePassword({Key? key}) : super(key: key);
+class ChangePasswordPage extends StatefulWidget {
+  const ChangePasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<ChangePassword> createState() => _ChangePasswordState();
+  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
   bool _hidePassword = true;
 
   final _formKey = GlobalKey<FormState>();
@@ -100,7 +100,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           _currentPasswordController,
                           TextInputAction.next,
                           validator: Validator.validatePassword,
-                          decoration: kFormFieldDecoration.copyWith(
+                          decoration: kTextFieldDecoration.copyWith(
                             suffixIcon: IconButton(
                               icon: Icon(
                                   _hidePassword
@@ -132,7 +132,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           _newPasswordController,
                           TextInputAction.next,
                           validator: Validator.validatePassword,
-                          decoration: kFormFieldDecoration.copyWith(
+                          decoration: kTextFieldDecoration.copyWith(
                             suffixIcon: IconButton(
                               icon: Icon(
                                   _hidePassword
@@ -164,7 +164,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           _confirmNewPasswordController,
                           TextInputAction.done,
                           validator: Validator.validatePassword,
-                          decoration: kFormFieldDecoration.copyWith(
+                          decoration: kTextFieldDecoration.copyWith(
                             suffixIcon: IconButton(
                               icon: Icon(
                                   _hidePassword
@@ -192,7 +192,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     TextEditingController controller,
     TextInputAction textInputAction, {
     String? Function(String?)? validator,
-    InputDecoration decoration = kFormFieldDecoration,
+    InputDecoration decoration = kTextFieldDecoration,
     TextInputType keyboardType = TextInputType.text,
   }) {
     return Column(
@@ -209,7 +209,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           cursorColor: ColorConstants.kTextPrimaryColor,
           validator: validator,
           decoration: decoration,
-          style: kTextFieldContent,
+          style: kTextFieldStyle,
           textAlignVertical: TextAlignVertical.center,
         ),
       ],

@@ -2,7 +2,9 @@ import 'package:caronsale/constants/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/constants/style_constants.dart';
 import 'package:caronsale/helpers/validator.dart';
+import 'package:caronsale/widgets/app_bar.dart';
 import 'package:caronsale/widgets/mandatory_star.dart';
+import 'package:caronsale/widgets/text_button.dart';
 import 'package:caronsale/widgets/text_field.dart';
 import 'package:caronsale/models/vehicle_detail_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,48 +27,37 @@ class VehicleDetailPage extends StatefulWidget {
 }
 
 class _VehicleDetailPageState extends State<VehicleDetailPage> {
-  late TextEditingController _vehicleMakeController;
-  late TextEditingController _vehicleModelController;
-  late TextEditingController _vehicleIdentificationNumberController;
-  late TextEditingController _dateController;
-  late DateTime _entryDate;
-  bool _isEdit = false;
+  final _vehicleMakeController = TextEditingController();
+  final _vehicleModelController = TextEditingController();
+  final _vinController = TextEditingController();
+  final _dateController = TextEditingController();
+  DateTime _entryDate = DateTime.now();
 
-  VehicleDetailModel _vehicleDetailModel = VehicleDetailModel();
+  final _vehicleDetailModel = VehicleDetailModel();
 
-  XFile? imageFile;
-
+  XFile? _imageFile;
   String _vehicleUrl = '';
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     if (widget.vehicleDetailModel != null) {
-      _isEdit = true;
-      _vehicleDetailModel.id = widget.vehicleDetailModel!.id;
-      _vehicleDetailModel = widget.vehicleDetailModel!;
+      _vehicleMakeController.text = widget.vehicleDetailModel!.vehicleMake;
+      _vehicleModelController.text = widget.vehicleDetailModel!.vehicleModel;
+      _vinController.text = widget.vehicleDetailModel!.vin;
+      _dateController.text =
+          DateFormat(' d MMM, ' 'yy').format(widget.vehicleDetailModel!.date);
+      _entryDate = widget.vehicleDetailModel!.date;
       _vehicleUrl = widget.vehicleDetailModel!.vehiclePhotoUrl;
     }
-    _vehicleMakeController = TextEditingController(
-        text: _isEdit ? _vehicleDetailModel.vehicleMake : '');
-    _vehicleModelController = TextEditingController(
-        text: _isEdit ? _vehicleDetailModel.vehicleModel : '');
-    _vehicleIdentificationNumberController =
-        TextEditingController(text: _isEdit ? _vehicleDetailModel.vin : '');
-    _dateController = TextEditingController(
-        text: _isEdit
-            ? DateFormat(' d MMM, ' 'yy').format(_vehicleDetailModel.date)
-            : '');
-    _entryDate = _isEdit ? _vehicleDetailModel.date : DateTime.now();
   }
 
   @override
   void dispose() {
     _vehicleMakeController.dispose();
     _vehicleModelController.dispose();
-    _vehicleIdentificationNumberController.dispose();
+    _vinController.dispose();
     _dateController.dispose();
     super.dispose();
   }
@@ -85,7 +76,8 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
         child: Scaffold(
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: _getFAB(context),
+          floatingActionButton:
+              CosTextButton(onPressed: _onSavePressed, title: 'SAVE'),
           body: Form(
             key: _formKey,
             child: Padding(
@@ -97,85 +89,31 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            color: ColorConstants.kTextPrimaryColor,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text("Vehicle Detail",
-                              style: kHeader.copyWith(fontSize: 22)),
-                        ),
-                      ],
-                    ),
+                    const CosAppBar(title: "Vehicle Detail"),
                     const SizedBox(
                       height: 50,
                     ),
                     buildInputFormFieldWithIcon(
-                      context,
-                      Row(
-                        children: const [
-                          Text("DATE", style: kInputformHeader),
-                          MandatoryStar(),
-                        ],
-                      ),
-                      const Icon(
-                        Icons.calendar_today_outlined,
-                        color: ColorConstants.kSecondaryTextColor,
-                        size: 18,
-                      ),
-                      _dateController,
-                      onTap: () async {
-                        DateTime today = DateTime.now();
-                        FocusScope.of(context).unfocus();
-                        await Future.delayed(const Duration(milliseconds: 100));
-                        var date = await showRoundedDatePicker(
-                          height: 300,
-                          context: context,
-                          initialDate: _entryDate,
-                          firstDate:
-                              today.subtract(const Duration(days: 365 * 10)),
-                          lastDate: today.add(const Duration(days: 365 * 3)),
-                          borderRadius: 16,
-                          styleDatePicker: MaterialRoundedDatePickerStyle(
-                              paddingMonthHeader: const EdgeInsets.all(12),
-                              textStyleMonthYearHeader: TextStyle(
-                                  fontSize: 15,
-                                  color: ColorConstants.kTextPrimaryColor
-                                      .withOpacity(0.8))),
-                          theme: ThemeData(
-                            primarySwatch:
-                                ColorConstants.kCalendarMaterialColor,
-                            // ignore: deprecated_member_use
-                            accentColor: ColorConstants.kSecondaryTextColor,
-                          ),
-                        );
-                        if (date == null) {
-                          return;
-                        }
-
-                        _entryDate = date;
-                        var local = _entryDate.toLocal();
-
-                        _dateController.text =
-                            DateFormat(' d MMM, ' 'yy').format(local);
-
-                        setState(() {});
-                      },
-                    ),
+                        context,
+                        Row(
+                          children: const [
+                            Text("DATE", style: kInputformHeader),
+                            MandatoryStar(),
+                          ],
+                        ),
+                        const Icon(
+                          Icons.calendar_today_outlined,
+                          color: ColorConstants.kSecondaryTextColor,
+                          size: 18,
+                        ),
+                        _dateController,
+                        onTap: _onCalendarPressed),
                     const SizedBox(
                       height: 23,
                     ),
                     CosTextField(
                         title: 'VEHICLE IDENTIFICATION NUMBER',
-                        controller: _vehicleIdentificationNumberController,
+                        controller: _vinController,
                         showAsMandatory: true,
                         textInputAction: TextInputAction.next,
                         validator: Validator.validateVin,
@@ -205,7 +143,10 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    _getVehicleImage(context)
+                    _getVehicleImage(context),
+                    const SizedBox(
+                      height: 100,
+                    ),
                   ],
                 ),
               ),
@@ -218,15 +159,20 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
 
   Widget _getVehicleImage(BuildContext context) {
     if (_vehicleUrl.isNotEmpty) {
-      return Image.network(_vehicleUrl);
+      return Image.network(
+        _vehicleUrl,
+        height: 230,
+        width: double.infinity,
+        fit: BoxFit.fill,
+      );
     }
 
-    if (imageFile != null) {
+    if (_imageFile != null) {
       return SizedBox(
-        height: 120,
-        width: 130,
+        height: 230,
+        width: double.infinity,
         child: Image(
-          image: FileImage(File(imageFile!.path)),
+          image: FileImage(File(_imageFile!.path)),
           fit: BoxFit.fill,
         ),
       );
@@ -243,8 +189,8 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Container(
-                height: 120,
-                width: 130,
+                height: 230,
+                width: double.infinity,
                 decoration: BoxDecoration(
                     border: Border.all(
                       color: ColorConstants.kFormBorderColor,
@@ -256,6 +202,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
             const Icon(
               Icons.add,
               color: ColorConstants.kSecondaryTextColor,
+              size: 35,
             )
           ],
         ));
@@ -313,7 +260,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
       source: ImageSource.gallery,
     );
     if (pickedFile != null) {
-      imageFile = pickedFile;
+      _imageFile = pickedFile;
     }
     setState(() {});
 
@@ -325,82 +272,10 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
       source: ImageSource.camera,
     );
     if (pickedFile != null) {
-      imageFile = pickedFile;
+      _imageFile = pickedFile;
     }
     setState(() {});
     Navigator.pop(context);
-  }
-
-  _getFAB(BuildContext context) {
-    return TextButton(
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all(ColorConstants.kActionButtonColor),
-            fixedSize: MaterialStateProperty.all(
-                Size(MediaQuery.of(context).size.width * 0.95, 55)),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            )),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 3),
-          child: Text(
-            "SAVE",
-            style: kSubHeader.copyWith(color: ColorConstants.kTextPrimaryColor),
-          ),
-        ),
-        onPressed: () async {
-          if ((_formKey.currentState?.validate() ?? false) &&
-              _dateController.text.isNotEmpty) {
-            _vehicleDetailModel.date = _entryDate;
-            _vehicleDetailModel.vin =
-                _vehicleIdentificationNumberController.text;
-            _vehicleDetailModel.vehicleMake = _vehicleMakeController.text;
-            _vehicleDetailModel.vehicleModel = _vehicleModelController.text;
-
-            if (!_isEdit) {
-              if (imageFile != null) {
-                final file = File(imageFile!.path);
-                final imageName =
-                    '${DateTime.now().millisecondsSinceEpoch}${path.extension(imageFile!.path)}';
-                final firebaseStorageRef =
-                    FirebaseStorage.instance.ref().child('images/$imageName');
-
-                try {
-                  final uploadTask = await firebaseStorageRef.putFile(file);
-                  final _fileURL = await uploadTask.ref.getDownloadURL();
-                  _vehicleDetailModel.vehiclePhotoUrl = _fileURL;
-                } on FirebaseException catch (e) {
-                  showAlertDialog(context, 'Error', e.toString());
-                }
-              }
-            } else {
-              // _vehicleDetailModel.vehiclePhotoUrl =
-              //     _vehicleDetailModel.vehiclePhotoUrl; //TODO: Send right param
-            }
-
-            try {
-              if (!_isEdit) {
-                await FirebaseFirestore.instance
-                    .collection('vehicles')
-                    .doc()
-                    .set(_vehicleDetailModel.toJSON());
-              } else {
-                await FirebaseFirestore.instance
-                    .collection('vehicles')
-                    .doc(_vehicleDetailModel.id)
-                    .update(_vehicleDetailModel.toJSON());
-              }
-            } on Exception catch (e) {
-              showAlertDialog(context, 'Error', e.toString());
-            }
-
-            Navigator.pop(context);
-          } else {
-            showAlertDialog(context, 'Error', 'Please verify the field(s)');
-          }
-        });
   }
 
   Widget buildInputFormFieldWithIcon(
@@ -425,8 +300,108 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
           decoration: kTextFieldDecoration.copyWith(suffixIcon: suffixImage),
           style: kTextFieldStyle,
           textAlignVertical: TextAlignVertical.center,
+          validator: Validator.validateDate,
         ),
       ],
     );
+  }
+
+  void _onSavePressed() async {
+    if ((_formKey.currentState?.validate() ?? false)) {
+      _vehicleDetailModel.date = _entryDate;
+      _vehicleDetailModel.vin = _vinController.text;
+      _vehicleDetailModel.vehicleMake = _vehicleMakeController.text;
+      _vehicleDetailModel.vehicleModel = _vehicleModelController.text;
+
+      if (await _checkIfVinExists()) {
+        showAlertDialog(context, 'Error', 'VIN already exists');
+        return;
+      }
+
+      if (_vehicleUrl.isEmpty) {
+        if (_imageFile != null) {
+          try {
+            await _uploadImage();
+          } on FirebaseException catch (e) {
+            showAlertDialog(context, 'Error', e.toString());
+            return;
+          }
+        }
+      }
+
+      _vehicleDetailModel.vehiclePhotoUrl = _vehicleUrl;
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('vehicles')
+            .doc(_vinController.text)
+            .set(_vehicleDetailModel.toJSON(), SetOptions(merge: true));
+      } on Exception catch (e) {
+        showAlertDialog(context, 'Error', e.toString());
+      }
+
+      Navigator.pop(context);
+    } else {
+      showAlertDialog(context, 'Error', 'Please verify the field(s)');
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    final file = File(_imageFile!.path);
+    final imageName =
+        '${_vinController.text}${path.extension(_imageFile!.path)}';
+    final firebaseStorageRef =
+        FirebaseStorage.instance.ref().child('images/$imageName');
+
+    final uploadTask = await firebaseStorageRef.putFile(file);
+    final fileURL = await uploadTask.ref.getDownloadURL();
+    _vehicleUrl = fileURL;
+  }
+
+  void _onCalendarPressed() async {
+    DateTime today = DateTime.now();
+    FocusScope.of(context).unfocus();
+    await Future.delayed(const Duration(milliseconds: 100));
+    var date = await showRoundedDatePicker(
+      height: 300,
+      context: context,
+      initialDate: _entryDate,
+      firstDate: today.subtract(const Duration(days: 365 * 10)),
+      lastDate: today.add(const Duration(days: 365 * 3)),
+      borderRadius: 16,
+      styleDatePicker: MaterialRoundedDatePickerStyle(
+          paddingMonthHeader: const EdgeInsets.all(12),
+          textStyleMonthYearHeader: TextStyle(
+              fontSize: 15,
+              color: ColorConstants.kTextPrimaryColor.withOpacity(0.8))),
+      theme: ThemeData(
+        primarySwatch: ColorConstants.kCalendarMaterialColor,
+        // ignore: deprecated_member_use
+        accentColor: ColorConstants.kSecondaryTextColor,
+      ),
+    );
+    if (date == null) {
+      return;
+    }
+
+    _entryDate = date;
+    var local = _entryDate.toLocal();
+
+    _dateController.text = DateFormat(' d MMM, ' 'yy').format(local);
+
+    setState(() {});
+  }
+
+  Future<bool> _checkIfVinExists() async {
+    if (_vinController.text == widget.vehicleDetailModel?.vin) {
+      return false;
+    }
+
+    var snapshot = await FirebaseFirestore.instance
+        .collection('vehicles')
+        .doc(_vinController.text)
+        .get();
+
+    return snapshot.exists;
   }
 }

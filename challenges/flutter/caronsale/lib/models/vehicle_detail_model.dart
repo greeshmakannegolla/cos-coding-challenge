@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VehicleDetailModel {
-  String id = '';
   DateTime date = DateTime.now();
   String vin = '';
   String vehicleMake = '';
@@ -9,7 +8,6 @@ class VehicleDetailModel {
   String vehiclePhotoUrl = '';
 
   VehicleDetailModel() {
-    id = '';
     date = DateTime.now();
     vin = '';
     vehicleMake = '';
@@ -21,7 +19,6 @@ class VehicleDetailModel {
     var json = snapshot.data() as Map<String, dynamic>;
     var timestamp = json['date'] as Timestamp;
 
-    id = snapshot.id;
     date = timestamp.toDate();
     vin = json['vin'];
     vehicleMake = json['vehicleMake'];

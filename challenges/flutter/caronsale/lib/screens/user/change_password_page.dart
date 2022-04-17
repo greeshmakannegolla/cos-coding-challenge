@@ -1,6 +1,5 @@
-import 'package:caronsale/constants/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
-import 'package:caronsale/constants/style_constants.dart';
+import 'package:caronsale/widgets/app_bar.dart';
 import 'package:caronsale/widgets/password_field.dart';
 import 'package:caronsale/widgets/text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,24 +62,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Icon(
-                              Icons.arrow_back_ios_rounded,
-                              color: ColorConstants.kTextPrimaryColor,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text("Change Password",
-                                style: kHeader.copyWith(fontSize: 22)),
-                          ),
-                        ],
-                      ),
+                      const CosAppBar(title: "Change Password"),
                       const SizedBox(
                         height: 50,
                       ),

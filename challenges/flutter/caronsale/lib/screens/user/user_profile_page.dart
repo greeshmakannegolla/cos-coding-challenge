@@ -7,6 +7,7 @@ import 'package:caronsale/constants/string_constants.dart';
 import 'package:caronsale/constants/style_constants.dart';
 import 'package:caronsale/screens/user/change_password_page.dart';
 import 'package:caronsale/screens/user/login_page.dart';
+import 'package:caronsale/widgets/app_bar.dart';
 import 'package:caronsale/widgets/avatar.dart';
 import 'package:caronsale/widgets/text_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -75,7 +76,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _getAppBar(context),
+              const CosAppBar(title: "My Profile"),
               const SizedBox(
                 height: 45,
               ),
@@ -181,26 +182,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
       ),
-    );
-  }
-
-  Row _getAppBar(BuildContext context) {
-    return Row(
-      children: [
-        InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: ColorConstants.kTextPrimaryColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text("My Profile", style: kHeader.copyWith(fontSize: 22)),
-        ),
-      ],
     );
   }
 

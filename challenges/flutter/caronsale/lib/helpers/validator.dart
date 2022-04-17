@@ -2,7 +2,8 @@ import 'package:email_validator/email_validator.dart';
 
 class Validator {
   static String? validateEmail(String? emailp) {
-    String email = emailp ?? '';
+    String email = emailp ?? 'Invalid';
+
     if (email.isEmpty) {
       return 'Please enter your email';
     }
@@ -15,7 +16,7 @@ class Validator {
 
   static String? validatePassword(String? password) {
     if (password == null) {
-      return null;
+      return 'Invalid';
     }
     if (password.isEmpty) {
       return 'Please enter password';
@@ -29,7 +30,7 @@ class Validator {
   static String? validateVin(String? vin) {
     final validCharacters = RegExp(r'^[a-zA-Z0-9]+$');
     if (vin == null) {
-      return null;
+      return 'Invalid';
     }
     if (vin.isEmpty) {
       return 'Please enter VIN';
@@ -48,6 +49,17 @@ class Validator {
       return 'VIN cannot contain I, O, U characters';
     }
 
+    return null;
+  }
+
+  static String? validateDate(String? date) {
+    if (date == null) {
+      return 'Invalid';
+    }
+
+    if (date.isEmpty) {
+      return 'Please enter a date';
+    }
     return null;
   }
 }

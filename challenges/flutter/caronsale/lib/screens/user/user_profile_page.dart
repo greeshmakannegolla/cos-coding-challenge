@@ -7,6 +7,7 @@ import 'package:caronsale/constants/string_constants.dart';
 import 'package:caronsale/constants/style_constants.dart';
 import 'package:caronsale/screens/user/change_password_page.dart';
 import 'package:caronsale/screens/user/login_page.dart';
+import 'package:caronsale/widgets/avatar.dart';
 import 'package:caronsale/widgets/text_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -81,7 +82,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
               Center(
                 child: Column(
                   children: [
-                    _getAvtar(),
+                    Avatar(
+                      radius: 60,
+                      url: _profilePicUrl,
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -226,26 +230,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     if (pickedFile != null) {
       _imageFile = pickedFile;
     }
-  }
-
-  _getAvtar() {
-    return (_profilePicUrl != null && _profilePicUrl!.isNotEmpty)
-        ? CircleAvatar(
-            radius: 60,
-            backgroundImage: NetworkImage(
-              _profilePicUrl!,
-            ),
-          )
-        : CircleAvatar(
-            radius: 60,
-            backgroundColor: ColorConstants.kSecondaryTextColor,
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(60),
-                child: const Icon(
-                  Icons.person,
-                  size: 50,
-                )),
-          );
   }
 
   void _editProfilePhoto() async {

@@ -3,7 +3,8 @@ import 'package:caronsale/constants/string_constants.dart';
 import 'package:caronsale/models/vehicle_detail_model.dart';
 import 'package:caronsale/screens/user/user_profile_page.dart';
 import 'package:caronsale/screens/vehicle/vehicle_detail_page.dart';
-import 'package:caronsale/screens/vehicle/vehicle_inspection_card.dart';
+import 'package:caronsale/widgets/avatar.dart';
+import 'package:caronsale/widgets/vehicle_inspection_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -15,13 +16,13 @@ class VehicleOverviewPage extends StatefulWidget {
 }
 
 class _VehicleOverviewPageState extends State<VehicleOverviewPage> {
-  VehicleList vehiclesListDataModel = VehicleList();
+  VehicleList _vehiclesListDataModel = VehicleList();
   String _profileUrl = '';
 
   @override
   void initState() {
     super.initState();
-    _getSnapshotData();
+    _getVehiclesData();
     _getProfilePicture();
   }
 
@@ -38,14 +39,14 @@ class _VehicleOverviewPageState extends State<VehicleOverviewPage> {
     });
   }
 
-  _getSnapshotData() {
+  _getVehiclesData() {
     var vehiclesSnap = FirebaseFirestore.instance
         .collection('vehicles')
         .orderBy("date", descending: true)
         .snapshots();
 
     vehiclesSnap.listen((event) {
-      vehiclesListDataModel = VehicleList.fromSnapshotList(event.docs);
+      _vehiclesListDataModel = VehicleList.fromSnapshotList(event.docs);
       if (mounted) {
         setState(() {});
       }
@@ -87,36 +88,12 @@ class _VehicleOverviewPageState extends State<VehicleOverviewPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UserProfilePage(),
-                      ),
-                    );
-                  },
-                  child: (_profileUrl.isEmpty)
-                      ? CircleAvatar(
-                          radius: 28,
-                          backgroundColor: ColorConstants.kSecondaryTextColor,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(28),
-                              child: const Icon(
-                                Icons.person,
-                                size: 28,
-                              )),
-                        )
-                      : CircleAvatar(
-                          radius: 28,
-                          backgroundImage: NetworkImage(_profileUrl),
-                        ),
-                ),
+                _getAvatar(),
                 Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
-                    itemCount: vehiclesListDataModel.vehicleList.length,
+                    itemCount: _vehiclesListDataModel.vehicleList.length,
                     itemBuilder: (BuildContext ctx, int index) {
                       return InkWell(
                           onTap: () {
@@ -124,14 +101,14 @@ class _VehicleOverviewPageState extends State<VehicleOverviewPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => VehicleDetailPage(
-                                      vehicleDetailModel: vehiclesListDataModel
+                                      vehicleDetailModel: _vehiclesListDataModel
                                           .vehicleList[index])),
                             );
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: VehicleInspectionCard(
-                                vehiclesListDataModel.vehicleList[index]),
+                                _vehiclesListDataModel.vehicleList[index]),
                           ));
                     },
                   ),
@@ -142,5 +119,20 @@ class _VehicleOverviewPageState extends State<VehicleOverviewPage> {
         ),
       ),
     );
+  }
+
+  _getAvatar() {
+    return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const UserProfilePage(),
+            ),
+          );
+        },
+        child: Avatar(
+          url: _profileUrl,
+        ));
   }
 }

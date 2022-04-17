@@ -1,3 +1,4 @@
+import 'package:caronsale/helpers/string_constants.dart';
 import 'package:caronsale/screens/user_profile.dart';
 import 'package:caronsale/screens/vehicle_detail.dart';
 import 'package:caronsale/screens/vehicle_inspection_card.dart';
@@ -16,11 +17,26 @@ class VehicleInspectionList extends StatefulWidget {
 
 class _VehicleInspectionListState extends State<VehicleInspectionList> {
   VehicleList vehiclesListDataModel = VehicleList();
+  String _profileUrl = '';
 
   @override
   void initState() {
     super.initState();
     _getSnapshotData();
+    _getProfilePicture();
+  }
+
+  _getProfilePicture() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(kEmail)
+        .snapshots()
+        .listen((event) {
+      _profileUrl = event.data()?['profileUrl'];
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   _getSnapshotData() {
@@ -81,22 +97,21 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
                       ),
                     );
                   },
-                  child: const CircleAvatar(
-                    // backgroundImage: CachedNetworkImageProvider(
-                    //     Global.currentUser.imageUrl),
-                    backgroundColor: ColorConstants.kActionButtonColor,
-                    radius: 28,
-                    // : CircleAvatar(
-                    //     backgroundColor: ColorConstants.buttonColor,
-                    //     child: Text(
-                    //       Global.currentUser.firstName[0] +
-                    //           Global.currentUser.lastName[0],
-                    //       style: buttonStyle.copyWith(
-                    //         fontSize: 12,
-                    //       ),
-                    //     ),
-                    //   ), //TODO: Add this if no user profile image
-                  ),
+                  child: (_profileUrl.isEmpty)
+                      ? CircleAvatar(
+                          radius: 28,
+                          backgroundColor: ColorConstants.kSecondaryTextColor,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(28),
+                              child: const Icon(
+                                Icons.person,
+                                size: 28,
+                              )),
+                        )
+                      : CircleAvatar(
+                          radius: 28,
+                          backgroundImage: NetworkImage(_profileUrl),
+                        ),
                 ),
                 Expanded(
                   child: ListView.builder(

@@ -98,23 +98,19 @@ class _UserProfileState extends State<UserProfile> {
                     (_profilePicUrl != null && _profilePicUrl!.isNotEmpty)
                         ? CircleAvatar(
                             radius: 60,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child: Image.network(
-                                _profilePicUrl!,
-                                fit: BoxFit.cover,
-                              ),
+                            backgroundImage: NetworkImage(
+                              _profilePicUrl!,
                             ),
                           )
                         : CircleAvatar(
                             radius: 60,
+                            backgroundColor: ColorConstants.kSecondaryTextColor,
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child: Image.asset(
-                                kAccount,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
+                                borderRadius: BorderRadius.circular(60),
+                                child: const Icon(
+                                  Icons.person,
+                                  size: 50,
+                                )),
                           ),
                     const SizedBox(
                       height: 15,

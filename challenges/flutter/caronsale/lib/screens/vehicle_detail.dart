@@ -34,6 +34,8 @@ class _VehicleDetailState extends State<VehicleDetail> {
 
   XFile? imageFile;
 
+  String _vehicleUrl = '';
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -43,7 +45,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
       _isEdit = true;
       _vehicleDetailModel.id = widget.vehicleDetailModel!.id;
       _vehicleDetailModel = widget.vehicleDetailModel!;
-      // imageFile. = _vehicleDetailModel.vehiclePhotoUrl; //TODO: Get image
+      _vehicleUrl = widget.vehicleDetailModel!.vehiclePhotoUrl;
     }
     _vehicleMakeController = TextEditingController(
         text: _isEdit ? _vehicleDetailModel.vehicleMake : '');
@@ -224,44 +226,7 @@ class _VehicleDetailState extends State<VehicleDetail> {
                     const SizedBox(
                       height: 10,
                     ),
-                    (imageFile == null)
-                        ? InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              _showChoiceDialog(context);
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                    height: 120,
-                                    width: 130,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color:
-                                              ColorConstants.kFormBorderColor,
-                                          width: 1,
-                                        ),
-                                        color:
-                                            ColorConstants.kAppBackgroundColor),
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.add,
-                                  color: ColorConstants.kSecondaryTextColor,
-                                )
-                              ],
-                            ))
-                        : SizedBox(
-                            height: 120,
-                            width: 130,
-                            child: Image(
-                              image: FileImage(File(imageFile!.path)),
-                              fit: BoxFit.fill,
-                            ),
-                          )
+                    _getVehicleImage(context)
                   ],
                 ),
               ),
@@ -270,6 +235,51 @@ class _VehicleDetailState extends State<VehicleDetail> {
         ),
       ),
     );
+  }
+
+  Widget _getVehicleImage(BuildContext context) {
+    if (_vehicleUrl.isNotEmpty) {
+      return Image.network(_vehicleUrl);
+    }
+
+    if (imageFile != null) {
+      return SizedBox(
+        height: 120,
+        width: 130,
+        child: Image(
+          image: FileImage(File(imageFile!.path)),
+          fit: BoxFit.fill,
+        ),
+      );
+    }
+
+    return InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          _showChoiceDialog(context);
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                height: 120,
+                width: 130,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: ColorConstants.kFormBorderColor,
+                      width: 1,
+                    ),
+                    color: ColorConstants.kAppBackgroundColor),
+              ),
+            ),
+            const Icon(
+              Icons.add,
+              color: ColorConstants.kSecondaryTextColor,
+            )
+          ],
+        ));
   }
 
   Future<void> _showChoiceDialog(BuildContext context) {

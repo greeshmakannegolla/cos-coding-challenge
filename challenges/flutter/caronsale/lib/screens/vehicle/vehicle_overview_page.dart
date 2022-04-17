@@ -1,21 +1,20 @@
-import 'package:caronsale/helpers/string_constants.dart';
-import 'package:caronsale/screens/user_profile.dart';
-import 'package:caronsale/screens/vehicle_detail.dart';
-import 'package:caronsale/screens/vehicle_inspection_card.dart';
+import 'package:caronsale/constants/color_constants.dart';
+import 'package:caronsale/constants/string_constants.dart';
+import 'package:caronsale/models/vehicle_detail_model.dart';
+import 'package:caronsale/screens/user/user_profile_page.dart';
+import 'package:caronsale/screens/vehicle/vehicle_detail_page.dart';
+import 'package:caronsale/screens/vehicle/vehicle_inspection_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../helpers/color_constants.dart';
-import '../models/vehicle_detail_model.dart';
-
-class VehicleInspectionList extends StatefulWidget {
-  const VehicleInspectionList({Key? key}) : super(key: key);
+class VehicleOverviewPage extends StatefulWidget {
+  const VehicleOverviewPage({Key? key}) : super(key: key);
 
   @override
-  State<VehicleInspectionList> createState() => _VehicleInspectionListState();
+  State<VehicleOverviewPage> createState() => _VehicleOverviewPageState();
 }
 
-class _VehicleInspectionListState extends State<VehicleInspectionList> {
+class _VehicleOverviewPageState extends State<VehicleOverviewPage> {
   VehicleList vehiclesListDataModel = VehicleList();
   String _profileUrl = '';
 
@@ -72,7 +71,7 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
                 await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const VehicleDetail()));
+                        builder: (context) => const VehicleDetailPage()));
               },
               backgroundColor: ColorConstants.kLoginBackgroundColor,
               child: const Icon(
@@ -93,7 +92,7 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const UserProfile(),
+                        builder: (context) => const UserProfilePage(),
                       ),
                     );
                   },
@@ -124,7 +123,7 @@ class _VehicleInspectionListState extends State<VehicleInspectionList> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => VehicleDetail(
+                                  builder: (context) => VehicleDetailPage(
                                       vehicleDetailModel: vehiclesListDataModel
                                           .vehicleList[index])),
                             );

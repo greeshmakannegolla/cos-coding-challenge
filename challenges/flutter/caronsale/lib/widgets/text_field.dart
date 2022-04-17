@@ -1,6 +1,6 @@
-import 'package:caronsale/helpers/color_constants.dart';
-import 'package:caronsale/helpers/style_constants.dart';
-import 'package:caronsale/helpers/widgets/mandatory_star.dart';
+import 'package:caronsale/constants/color_constants.dart';
+import 'package:caronsale/constants/style_constants.dart';
+import 'package:caronsale/widgets/mandatory_star.dart';
 import 'package:flutter/material.dart';
 
 class CosTextField extends StatelessWidget {

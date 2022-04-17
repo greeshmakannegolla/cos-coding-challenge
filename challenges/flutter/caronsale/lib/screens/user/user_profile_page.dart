@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:caronsale/helpers/color_constants.dart';
+import 'package:caronsale/constants/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
-import 'package:caronsale/helpers/string_constants.dart';
-import 'package:caronsale/helpers/style_constants.dart';
-import 'package:caronsale/screens/authentication/change_password_page.dart';
-import 'package:caronsale/screens/authentication/login_page.dart';
+import 'package:caronsale/constants/string_constants.dart';
+import 'package:caronsale/constants/style_constants.dart';
+import 'package:caronsale/screens/user/change_password_page.dart';
+import 'package:caronsale/screens/user/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,14 +14,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({Key? key}) : super(key: key);
+class UserProfilePage extends StatefulWidget {
+  const UserProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
+  State<UserProfilePage> createState() => _UserProfilePageState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _UserProfilePageState extends State<UserProfilePage> {
   int? _groupValue;
   String? imageUploadMode;
 

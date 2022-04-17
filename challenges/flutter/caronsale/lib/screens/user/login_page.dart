@@ -1,9 +1,9 @@
 import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/validator.dart';
-import 'package:caronsale/helpers/widgets/password_field.dart';
-import 'package:caronsale/helpers/widgets/text_button.dart';
-import 'package:caronsale/helpers/widgets/text_field.dart';
-import 'package:caronsale/screens/vehicle_inspection_list.dart';
+import 'package:caronsale/widgets/password_field.dart';
+import 'package:caronsale/widgets/text_button.dart';
+import 'package:caronsale/widgets/text_field.dart';
+import 'package:caronsale/screens/vehicle/vehicle_overview_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -93,8 +93,7 @@ class _LoginPageState extends State<LoginPage> {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) => const VehicleInspectionList()),
+          MaterialPageRoute(builder: (context) => const VehicleOverviewPage()),
         );
       } on FirebaseAuthException catch (e) {
         showAlertDialog(context, 'Error', e.code);

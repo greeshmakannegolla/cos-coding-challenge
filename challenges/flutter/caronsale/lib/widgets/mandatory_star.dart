@@ -1,4 +1,4 @@
-import 'package:caronsale/helpers/color_constants.dart';
+import 'package:caronsale/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 class MandatoryStar extends StatelessWidget {

@@ -1,8 +1,9 @@
+import 'package:caronsale/constants/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
-import 'package:caronsale/helpers/style_constants.dart';
+import 'package:caronsale/constants/style_constants.dart';
 import 'package:caronsale/helpers/validator.dart';
-import 'package:caronsale/helpers/widgets/mandatory_star.dart';
-import 'package:caronsale/helpers/widgets/text_field.dart';
+import 'package:caronsale/widgets/mandatory_star.dart';
+import 'package:caronsale/widgets/text_field.dart';
 import 'package:caronsale/models/vehicle_detail_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,17 +15,16 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
-import '../helpers/color_constants.dart';
-
-class VehicleDetail extends StatefulWidget {
+class VehicleDetailPage extends StatefulWidget {
   final VehicleDetailModel? vehicleDetailModel;
-  const VehicleDetail({Key? key, this.vehicleDetailModel}) : super(key: key);
+  const VehicleDetailPage({Key? key, this.vehicleDetailModel})
+      : super(key: key);
 
   @override
-  State<VehicleDetail> createState() => _VehicleDetailState();
+  State<VehicleDetailPage> createState() => _VehicleDetailPageState();
 }
 
-class _VehicleDetailState extends State<VehicleDetail> {
+class _VehicleDetailPageState extends State<VehicleDetailPage> {
   late TextEditingController _vehicleMakeController;
   late TextEditingController _vehicleModelController;
   late TextEditingController _vehicleIdentificationNumberController;

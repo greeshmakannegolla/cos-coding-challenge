@@ -1,8 +1,8 @@
-import 'package:caronsale/helpers/color_constants.dart';
+import 'package:caronsale/constants/color_constants.dart';
 import 'package:caronsale/helpers/helper_functions.dart';
-import 'package:caronsale/helpers/style_constants.dart';
-import 'package:caronsale/helpers/widgets/password_field.dart';
-import 'package:caronsale/helpers/widgets/text_button.dart';
+import 'package:caronsale/constants/style_constants.dart';
+import 'package:caronsale/widgets/password_field.dart';
+import 'package:caronsale/widgets/text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

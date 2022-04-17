@@ -1,5 +1,5 @@
-import 'package:caronsale/helpers/string_constants.dart';
-import 'package:caronsale/helpers/style_constants.dart';
+import 'package:caronsale/constants/string_constants.dart';
+import 'package:caronsale/constants/style_constants.dart';
 import 'package:caronsale/models/vehicle_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

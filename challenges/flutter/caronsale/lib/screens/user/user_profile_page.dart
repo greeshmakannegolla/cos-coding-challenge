@@ -7,6 +7,7 @@ import 'package:caronsale/constants/string_constants.dart';
 import 'package:caronsale/constants/style_constants.dart';
 import 'package:caronsale/screens/user/change_password_page.dart';
 import 'package:caronsale/screens/user/login_page.dart';
+import 'package:caronsale/widgets/text_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,9 +24,9 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   int? _groupValue;
-  String? imageUploadMode;
+  String? _imageUploadMode;
 
-  XFile? imageFile;
+  XFile? _imageFile;
   String? _profilePicUrl;
   StreamSubscription? _streamSubscription;
 
@@ -37,22 +38,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
         .collection('users')
         .doc(kEmail)
         .snapshots()
-        .listen((value) {
-      var data = value.data() ?? {};
-      var preferredImagePicker = data['preferredImagePicker'];
+        .listen(_onUserChanged);
+  }
 
-      if (preferredImagePicker.toLowerCase() == "gallery") {
-        _groupValue = 0;
-        imageUploadMode = 'gallery';
-      } else {
-        _groupValue = 1;
-        imageUploadMode = 'camera';
-      }
-      _profilePicUrl = data['profileUrl'];
-      if (mounted) {
-        setState(() {});
-      }
-    });
+  _onUserChanged(value) {
+    var data = value.data() ?? {};
+    var preferredImagePicker = data['preferredImagePicker'];
+
+    if (preferredImagePicker.toLowerCase() == "gallery") {
+      _groupValue = 0;
+      _imageUploadMode = 'gallery';
+    } else {
+      _groupValue = 1;
+      _imageUploadMode = 'camera';
+    }
+    _profilePicUrl = data['profileUrl'];
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -71,81 +74,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: ColorConstants.kTextPrimaryColor,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text("My Profile",
-                        style: kHeader.copyWith(fontSize: 22)),
-                  ),
-                ],
-              ),
+              _getAppBar(context),
               const SizedBox(
                 height: 45,
               ),
               Center(
                 child: Column(
                   children: [
-                    (_profilePicUrl != null && _profilePicUrl!.isNotEmpty)
-                        ? CircleAvatar(
-                            radius: 60,
-                            backgroundImage: NetworkImage(
-                              _profilePicUrl!,
-                            ),
-                          )
-                        : CircleAvatar(
-                            radius: 60,
-                            backgroundColor: ColorConstants.kSecondaryTextColor,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(60),
-                                child: const Icon(
-                                  Icons.person,
-                                  size: 50,
-                                )),
-                          ),
+                    _getAvtar(),
                     const SizedBox(
                       height: 15,
                     ),
                     InkWell(
-                        onTap: () async {
-                          if (imageUploadMode == 'gallery') {
-                            await _openGallery(context);
-                          } else {
-                            _openCamera(context);
-                          }
-
-                          if (imageFile != null) {
-                            final file = File(imageFile!.path);
-                            final imageName =
-                                '${FirebaseAuth.instance.currentUser?.email?.split('@')[0]}${path.extension(imageFile!.path)}';
-                            final firebaseStorageRef = FirebaseStorage.instance
-                                .ref()
-                                .child('profileImage/$imageName');
-
-                            try {
-                              final uploadTask =
-                                  await firebaseStorageRef.putFile(file);
-                              final _fileURL =
-                                  await uploadTask.ref.getDownloadURL();
-
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(kEmail)
-                                  .update({'profileUrl': _fileURL});
-                            } on FirebaseException catch (e) {
-                              showAlertDialog(context, 'Error', e.toString());
-                            }
-                          }
-                        },
+                        onTap: _editProfilePhoto,
                         child: const Text(
                           'Change profile photo',
                           style: kUnderlineHeader,
@@ -217,65 +158,45 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   const SizedBox(
                     height: 70,
                   ),
-                  TextButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            ColorConstants.kActionButtonColor),
-                        fixedSize: MaterialStateProperty.all(
-                            Size(MediaQuery.of(context).size.width * 0.95, 55)),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        )),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ChangePasswordPage()),
-                      );
-                    },
-                    child: Text(
-                      "Change Password",
-                      style: kHeader.copyWith(fontSize: 20),
-                    ),
-                  ),
+                  CosTextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChangePasswordPage()),
+                        );
+                      },
+                      title: "Change Password"),
                   const SizedBox(
                     height: 20,
                   ),
-                  TextButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            ColorConstants.kActionButtonColor),
-                        fixedSize: MaterialStateProperty.all(
-                            Size(MediaQuery.of(context).size.width * 0.95, 55)),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        )),
-                    onPressed: () async {
-                      try {
-                        await FirebaseAuth.instance.signOut();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (ctx) => const LoginPage()),
-                            (Route<dynamic> route) => false);
-                      } on FirebaseException catch (e) {
-                        showAlertDialog(context, 'Error', e.toString());
-                      }
-                    },
-                    child: Text(
-                      "Logout",
-                      style: kHeader.copyWith(fontSize: 20),
-                    ),
-                  ),
+                  CosTextButton(onPressed: _onLogoutPressed, title: "Logout"),
                 ],
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Row _getAppBar(BuildContext context) {
+    return Row(
+      children: [
+        InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: ColorConstants.kTextPrimaryColor,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text("My Profile", style: kHeader.copyWith(fontSize: 22)),
+        ),
+      ],
     );
   }
 
@@ -294,9 +215,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
       source: ImageSource.gallery,
     );
     if (pickedFile != null) {
-      imageFile = pickedFile;
+      _imageFile = pickedFile;
     }
-    //setState(() {});
   }
 
   Future<void> _openCamera(BuildContext context) async {
@@ -304,8 +224,66 @@ class _UserProfilePageState extends State<UserProfilePage> {
       source: ImageSource.camera,
     );
     if (pickedFile != null) {
-      imageFile = pickedFile;
+      _imageFile = pickedFile;
     }
-    //setState(() {});
+  }
+
+  _getAvtar() {
+    return (_profilePicUrl != null && _profilePicUrl!.isNotEmpty)
+        ? CircleAvatar(
+            radius: 60,
+            backgroundImage: NetworkImage(
+              _profilePicUrl!,
+            ),
+          )
+        : CircleAvatar(
+            radius: 60,
+            backgroundColor: ColorConstants.kSecondaryTextColor,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(60),
+                child: const Icon(
+                  Icons.person,
+                  size: 50,
+                )),
+          );
+  }
+
+  void _editProfilePhoto() async {
+    if (_imageUploadMode == 'gallery') {
+      await _openGallery(context);
+    } else {
+      _openCamera(context);
+    }
+
+    if (_imageFile != null) {
+      final file = File(_imageFile!.path);
+      final imageName =
+          '${FirebaseAuth.instance.currentUser?.email?.split('@')[0]}${path.extension(_imageFile!.path)}';
+      final firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('profileImage/$imageName');
+
+      try {
+        final uploadTask = await firebaseStorageRef.putFile(file);
+        final _fileURL = await uploadTask.ref.getDownloadURL();
+
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(kEmail)
+            .update({'profileUrl': _fileURL});
+      } on FirebaseException catch (e) {
+        showAlertDialog(context, 'Error', e.toString());
+      }
+    }
+  }
+
+  void _onLogoutPressed() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (ctx) => const LoginPage()),
+          (Route<dynamic> route) => false);
+    } on FirebaseException catch (e) {
+      showAlertDialog(context, 'Error', e.toString());
+    }
   }
 }

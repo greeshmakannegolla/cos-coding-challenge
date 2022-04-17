@@ -1,10 +1,10 @@
 import 'package:caronsale/helpers/color_constants.dart';
+import 'package:caronsale/helpers/helper_functions.dart';
+import 'package:caronsale/helpers/style_constants.dart';
+import 'package:caronsale/helpers/widgets/password_field.dart';
+import 'package:caronsale/helpers/widgets/text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../../helpers/helper_functions.dart';
-import '../../helpers/style_constants.dart';
-import '../../helpers/validator.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key}) : super(key: key);
@@ -14,8 +14,6 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  bool _hidePassword = true;
-
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _currentPasswordController;
@@ -53,7 +51,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         child: Scaffold(
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
-            floatingActionButton: _getFAB(context),
+            floatingActionButton:
+                CosTextButton(onPressed: _onSavePressed, title: "SAVE"),
             body: Form(
                 key: _formKey,
                 child: Padding(
@@ -85,99 +84,29 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       const SizedBox(
                         height: 50,
                       ),
-                      _buildInputField(
-                          context,
-                          Row(
-                            children: [
-                              const Text(
-                                'CURRENT PASSWORD',
-                                style: kInputformHeader,
-                              ),
-                              getMandatoryStar()
-                            ],
-                          ),
-                          true,
-                          _currentPasswordController,
-                          TextInputAction.next,
-                          validator: Validator.validatePassword,
-                          decoration: kTextFieldDecoration.copyWith(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                  _hidePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: ColorConstants.kSecondaryTextColor),
-                              onPressed: () {
-                                setState(() {
-                                  _hidePassword = !_hidePassword;
-                                });
-                              },
-                            ),
-                          )),
+                      CosPasswordField(
+                        title: 'CURRENT PASSWORD',
+                        controller: _currentPasswordController,
+                        textInputAction: TextInputAction.next,
+                        showAsMandatory: true,
+                      ),
                       const SizedBox(
                         height: 15,
                       ),
-                      _buildInputField(
-                          context,
-                          Row(
-                            children: [
-                              const Text(
-                                'NEW PASSWORD',
-                                style: kInputformHeader,
-                              ),
-                              getMandatoryStar()
-                            ],
-                          ),
-                          true,
-                          _newPasswordController,
-                          TextInputAction.next,
-                          validator: Validator.validatePassword,
-                          decoration: kTextFieldDecoration.copyWith(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                  _hidePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: ColorConstants.kSecondaryTextColor),
-                              onPressed: () {
-                                setState(() {
-                                  _hidePassword = !_hidePassword;
-                                });
-                              },
-                            ),
-                          )),
+                      CosPasswordField(
+                        title: 'NEW PASSWORD',
+                        controller: _newPasswordController,
+                        textInputAction: TextInputAction.next,
+                        showAsMandatory: true,
+                      ),
                       const SizedBox(
                         height: 15,
                       ),
-                      _buildInputField(
-                          context,
-                          Row(
-                            children: [
-                              const Text(
-                                'CONFIRM PASSWORD',
-                                style: kInputformHeader,
-                              ),
-                              getMandatoryStar()
-                            ],
-                          ),
-                          true,
-                          _confirmNewPasswordController,
-                          TextInputAction.done,
-                          validator: Validator.validatePassword,
-                          decoration: kTextFieldDecoration.copyWith(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                  _hidePassword
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: ColorConstants.kSecondaryTextColor),
-                              onPressed: () {
-                                setState(() {
-                                  _hidePassword = !_hidePassword;
-                                });
-                              },
-                            ),
-                          )),
+                      CosPasswordField(
+                        title: 'CONFIRM PASSWORD',
+                        controller: _confirmNewPasswordController,
+                        showAsMandatory: true,
+                      ),
                     ],
                   ),
                 ))),
@@ -185,83 +114,31 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     );
   }
 
-  Widget _buildInputField(
-    context,
-    Widget title,
-    bool isPasswordField,
-    TextEditingController controller,
-    TextInputAction textInputAction, {
-    String? Function(String?)? validator,
-    InputDecoration decoration = kTextFieldDecoration,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        title,
-        const SizedBox(height: 10),
-        TextFormField(
-          autocorrect: false,
-          controller: controller,
-          textInputAction: textInputAction,
-          keyboardType: keyboardType,
-          obscureText: isPasswordField ? _hidePassword : false,
-          cursorColor: ColorConstants.kTextPrimaryColor,
-          validator: validator,
-          decoration: decoration,
-          style: kTextFieldStyle,
-          textAlignVertical: TextAlignVertical.center,
-        ),
-      ],
-    );
-  }
+  void _onSavePressed() async {
+    if ((_formKey.currentState?.validate() ?? false) &&
+        (_confirmNewPasswordController.text == _newPasswordController.text)) {
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: FirebaseAuth.instance.currentUser?.email ?? '',
+            password: _currentPasswordController.text);
+        FirebaseAuth.instance.currentUser
+            ?.updatePassword(_newPasswordController.text);
 
-  _getFAB(BuildContext context) {
-    return TextButton(
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all(ColorConstants.kActionButtonColor),
-            fixedSize: MaterialStateProperty.all(
-                Size(MediaQuery.of(context).size.width * 0.95, 55)),
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            )),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 3),
-          child: Text(
-            "SAVE",
-            style: kSubHeader.copyWith(color: ColorConstants.kTextPrimaryColor),
-          ),
-        ),
-        onPressed: () async {
-          if ((_formKey.currentState?.validate() ?? false) &&
-              (_confirmNewPasswordController.text ==
-                  _newPasswordController.text)) {
-            try {
-              await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: FirebaseAuth.instance.currentUser?.email ?? '',
-                  password: _currentPasswordController.text);
-              FirebaseAuth.instance.currentUser
-                  ?.updatePassword(_newPasswordController.text);
+        var snackBar =
+            const SnackBar(content: Text('Password reset successfully'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-              var snackBar =
-                  const SnackBar(content: Text('Password reset successfully'));
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-              Navigator.pop(context);
-            } on FirebaseException catch (e) {
-              showAlertDialog(context, "Error", e.toString());
-            }
-          } else if (_confirmNewPasswordController.text !=
-              _newPasswordController.text) {
-            showAlertDialog(
-              context,
-              'Error',
-              "New password and confirm password do not match",
-            );
-          }
-        });
+        Navigator.pop(context);
+      } on FirebaseException catch (e) {
+        showAlertDialog(context, "Error", e.toString());
+      }
+    } else if (_confirmNewPasswordController.text !=
+        _newPasswordController.text) {
+      showAlertDialog(
+        context,
+        'Error',
+        "New password and confirm password do not match",
+      );
+    }
   }
 }

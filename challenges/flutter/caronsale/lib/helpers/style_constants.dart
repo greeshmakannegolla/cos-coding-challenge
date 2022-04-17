@@ -47,12 +47,12 @@ const kCalendarMonthStyle = TextStyle(
 //   fontWeight: FontWeight.w400,
 // );
 
-const kLoginTextTitleStyle = TextStyle(
-  color: ColorConstants.kTextPrimaryColor,
-  fontSize: 12.88,
-  fontWeight: FontWeight.w700,
-  fontFamily: "Sen",
-);
+// const kLoginTextTitleStyle = TextStyle(
+//   color: ColorConstants.kTextPrimaryColor,
+//   fontSize: 12.88,
+//   fontWeight: FontWeight.w700,
+//   fontFamily: "Sen",
+// );
 
 const kTextFieldDecoration = InputDecoration(
   filled: true,

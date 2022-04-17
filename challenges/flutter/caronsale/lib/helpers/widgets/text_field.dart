@@ -1,5 +1,6 @@
 import 'package:caronsale/helpers/color_constants.dart';
 import 'package:caronsale/helpers/style_constants.dart';
+import 'package:caronsale/helpers/widgets/mandatory_star.dart';
 import 'package:flutter/material.dart';
 
 class CosTextField extends StatelessWidget {
@@ -9,6 +10,8 @@ class CosTextField extends StatelessWidget {
       this.textInputType = TextInputType.text,
       this.textInputAction = TextInputAction.done,
       this.validator,
+      this.showAsMandatory = false,
+      this.maxLength,
       Key? key})
       : super(key: key);
 
@@ -17,18 +20,27 @@ class CosTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final TextInputType textInputType;
   final String? Function(String?)? validator;
+  final bool showAsMandatory;
+
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          title,
-          style: kLoginTextTitleStyle,
+        Row(
+          children: [
+            Text(
+              title,
+              style: kInputformHeader,
+            ),
+            showAsMandatory ? const MandatoryStar() : Container()
+          ],
         ),
         const SizedBox(height: 10),
         TextFormField(
+          maxLength: maxLength,
           textInputAction: textInputAction,
           controller: controller,
           keyboardType: textInputType,

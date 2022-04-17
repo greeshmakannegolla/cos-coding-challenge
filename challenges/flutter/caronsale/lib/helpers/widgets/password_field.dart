@@ -1,6 +1,7 @@
 import 'package:caronsale/helpers/color_constants.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/helpers/validator.dart';
+import 'package:caronsale/helpers/widgets/mandatory_star.dart';
 import 'package:flutter/material.dart';
 
 class CosPasswordField extends StatefulWidget {
@@ -8,12 +9,14 @@ class CosPasswordField extends StatefulWidget {
       {required this.title,
       required this.controller,
       this.textInputAction = TextInputAction.done,
+      this.showAsMandatory = false,
       Key? key})
       : super(key: key);
 
   final String title;
   final TextEditingController controller;
   final TextInputAction textInputAction;
+  final bool showAsMandatory;
 
   @override
   State<CosPasswordField> createState() => _CosPasswordFieldState();
@@ -27,9 +30,14 @@ class _CosPasswordFieldState extends State<CosPasswordField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          widget.title,
-          style: kLoginTextTitleStyle,
+        Row(
+          children: [
+            Text(
+              widget.title,
+              style: kInputformHeader,
+            ),
+            widget.showAsMandatory ? const MandatoryStar() : Container()
+          ],
         ),
         const SizedBox(height: 10),
         TextFormField(

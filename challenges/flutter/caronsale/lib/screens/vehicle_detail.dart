@@ -1,6 +1,8 @@
 import 'package:caronsale/helpers/helper_functions.dart';
 import 'package:caronsale/helpers/style_constants.dart';
 import 'package:caronsale/helpers/validator.dart';
+import 'package:caronsale/helpers/widgets/mandatory_star.dart';
+import 'package:caronsale/helpers/widgets/text_field.dart';
 import 'package:caronsale/models/vehicle_detail_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -119,9 +121,9 @@ class _VehicleDetailState extends State<VehicleDetail> {
                     buildInputFormFieldWithIcon(
                       context,
                       Row(
-                        children: [
-                          const Text("DATE", style: kInputformHeader),
-                          getMandatoryStar()
+                        children: const [
+                          Text("DATE", style: kInputformHeader),
+                          MandatoryStar(),
                         ],
                       ),
                       const Icon(
@@ -171,50 +173,27 @@ class _VehicleDetailState extends State<VehicleDetail> {
                     const SizedBox(
                       height: 23,
                     ),
-                    buildInputFormField(
-                        context,
-                        Row(
-                          children: [
-                            const Text(
-                              'VEHICLE IDENTIFICATION NUMBER',
-                              style: kInputformHeader,
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            getMandatoryStar(),
-                          ],
-                        ),
-                        _vehicleIdentificationNumberController,
-                        TextInputAction.next,
-                        keyboardType: TextInputType.name,
+                    CosTextField(
+                        title: 'VEHICLE IDENTIFICATION NUMBER',
+                        controller: _vehicleIdentificationNumberController,
+                        showAsMandatory: true,
+                        textInputAction: TextInputAction.next,
                         validator: Validator.validateVin,
                         maxLength: 17),
                     const SizedBox(
                       height: 23,
                     ),
-                    buildInputFormField(
-                      context,
-                      const Text(
-                        'VEHICLE MAKE',
-                        style: kInputformHeader,
-                      ),
-                      _vehicleMakeController,
-                      TextInputAction.next,
-                      keyboardType: TextInputType.name,
+                    CosTextField(
+                      title: 'VEHICLE MAKE',
+                      controller: _vehicleMakeController,
+                      textInputAction: TextInputAction.next,
                     ),
                     const SizedBox(
                       height: 23,
                     ),
-                    buildInputFormField(
-                      context,
-                      const Text(
-                        'VEHICLE MODEL',
-                        style: kInputformHeader,
-                      ),
-                      _vehicleModelController,
-                      TextInputAction.done,
-                      keyboardType: TextInputType.name,
+                    CosTextField(
+                      title: 'VEHICLE MODEL',
+                      controller: _vehicleModelController,
                     ),
                     const SizedBox(
                       height: 23,
@@ -422,5 +401,32 @@ class _VehicleDetailState extends State<VehicleDetail> {
             showAlertDialog(context, 'Error', 'Please verify the field(s)');
           }
         });
+  }
+
+  Widget buildInputFormFieldWithIcon(
+    context,
+    Widget title,
+    Widget suffixImage,
+    TextEditingController controller, {
+    void Function(String)? onChanged,
+    void Function()? onTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        title,
+        const SizedBox(height: 10),
+        TextFormField(
+          readOnly: true,
+          controller: controller,
+          onChanged: onChanged,
+          onTap: onTap,
+          cursorColor: ColorConstants.kTextPrimaryColor,
+          decoration: kTextFieldDecoration.copyWith(suffixIcon: suffixImage),
+          style: kTextFieldStyle,
+          textAlignVertical: TextAlignVertical.center,
+        ),
+      ],
+    );
   }
 }

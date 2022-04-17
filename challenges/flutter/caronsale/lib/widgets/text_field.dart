@@ -4,16 +4,18 @@ import 'package:caronsale/widgets/mandatory_star.dart';
 import 'package:flutter/material.dart';
 
 class CosTextField extends StatelessWidget {
-  const CosTextField(
-      {required this.title,
-      required this.controller,
-      this.textInputType = TextInputType.text,
-      this.textInputAction = TextInputAction.done,
-      this.validator,
-      this.showAsMandatory = false,
-      this.maxLength,
-      Key? key})
-      : super(key: key);
+  const CosTextField({
+    required this.title,
+    required this.controller,
+    this.textInputType = TextInputType.text,
+    this.textInputAction = TextInputAction.done,
+    this.validator,
+    this.showAsMandatory = false,
+    this.maxLength,
+    this.readOnly = false,
+    this.decoration = kTextFieldDecoration,
+    Key? key,
+  }) : super(key: key);
 
   final String title;
   final TextEditingController controller;
@@ -21,8 +23,9 @@ class CosTextField extends StatelessWidget {
   final TextInputType textInputType;
   final String? Function(String?)? validator;
   final bool showAsMandatory;
-
+  final bool readOnly;
   final int? maxLength;
+  final InputDecoration decoration;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +48,12 @@ class CosTextField extends StatelessWidget {
           controller: controller,
           keyboardType: textInputType,
           cursorColor: ColorConstants.kTextPrimaryColor,
-          decoration: kTextFieldDecoration,
+          decoration: decoration,
           style: kTextFieldStyle,
           textAlignVertical: TextAlignVertical.center,
           validator: validator,
           autocorrect: false,
+          readOnly: readOnly,
         ),
       ],
     );

@@ -112,12 +112,19 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                       height: 23,
                     ),
                     CosTextField(
-                        title: 'VEHICLE IDENTIFICATION NUMBER',
-                        controller: _vinController,
-                        showAsMandatory: true,
-                        textInputAction: TextInputAction.next,
-                        validator: Validator.validateVin,
-                        maxLength: 17),
+                      title: 'VEHICLE IDENTIFICATION NUMBER',
+                      controller: _vinController,
+                      showAsMandatory: true,
+                      textInputAction: TextInputAction.next,
+                      validator: Validator.validateVin,
+                      maxLength: 17,
+                      readOnly: _vinController.text.isNotEmpty ? true : false,
+                      decoration: _vinController.text.isEmpty
+                          ? kTextFieldDecoration
+                          : kTextFieldDecoration.copyWith(
+                              fillColor: ColorConstants.kSecondaryTextColor
+                                  .withOpacity(0.2)),
+                    ),
                     const SizedBox(
                       height: 23,
                     ),

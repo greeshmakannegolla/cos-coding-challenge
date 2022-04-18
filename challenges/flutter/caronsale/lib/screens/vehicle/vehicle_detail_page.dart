@@ -330,11 +330,13 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
       if (_vehicleUrl.isEmpty) {
         if (_imageFile != null) {
           try {
+            showLoaderDialog(context);
             await _uploadImage();
           } on FirebaseException catch (e) {
             showAlertDialog(context, 'Error', e.toString());
             return;
           }
+          Navigator.pop(context);
         }
       }
 
@@ -345,6 +347,12 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
             .collection('vehicles')
             .doc(_vinController.text)
             .set(_vehicleDetailModel.toJSON(), SetOptions(merge: true));
+
+        var snackBar = SnackBar(
+            content: Text(_vinController.text.isNotEmpty
+                ? 'Vehicle updated successfully'
+                : 'Vehicle added successfully'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } on Exception catch (e) {
         showAlertDialog(context, 'Error', e.toString());
       }
@@ -353,6 +361,26 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
     } else {
       showAlertDialog(context, 'Error', 'Please verify the field(s)');
     }
+  }
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: Row(
+        children: [
+          const CircularProgressIndicator(),
+          Container(
+              margin: const EdgeInsets.only(left: 7),
+              child: const Text("Loading...")),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   Future<void> _uploadImage() async {

@@ -112,7 +112,7 @@ class _VehicleOverviewPageState extends State<VehicleOverviewPage> {
                           ));
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),

@@ -65,20 +65,15 @@ class VehicleInspectionCard extends StatelessWidget {
         const SizedBox(
           height: 6,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            vehicleDetailModel.vehicleMake.isNotEmpty
-                ? Expanded(
-                    child: Text(vehicleDetailModel.vehicleMake,
-                        style: kSecondaryHeader),
-                  )
-                : Container(),
-            vehicleDetailModel.vehicleModel.isNotEmpty
-                ? Text(vehicleDetailModel.vehicleModel, style: kSecondaryHeader)
-                : Container()
-          ],
+        vehicleDetailModel.vehicleMake.isNotEmpty
+            ? Text(vehicleDetailModel.vehicleMake, style: kSecondaryHeader)
+            : Container(),
+        const SizedBox(
+          height: 6,
         ),
+        vehicleDetailModel.vehicleModel.isNotEmpty
+            ? Text(vehicleDetailModel.vehicleModel, style: kSecondaryHeader)
+            : Container(),
         const SizedBox(
           height: 10,
         ),

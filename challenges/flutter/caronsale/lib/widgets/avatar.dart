@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:caronsale/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class Avatar extends StatelessWidget {
     return (url != null && url!.isNotEmpty)
         ? CircleAvatar(
             radius: radius,
-            backgroundImage: NetworkImage(
+            backgroundImage: CachedNetworkImageProvider(
               url!,
             ),
           )

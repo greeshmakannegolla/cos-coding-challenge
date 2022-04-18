@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:caronsale/constants/string_constants.dart';
 import 'package:caronsale/constants/style_constants.dart';
 import 'package:caronsale/models/vehicle_detail_model.dart';
@@ -34,7 +35,10 @@ class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
               width: double.infinity,
               child: widget.vehicleDetailModel.vehiclePhotoUrl.isEmpty
                   ? Image.asset(kDefaultVehicle, fit: BoxFit.fill)
-                  : Image.network(widget.vehicleDetailModel.vehiclePhotoUrl,
+                  : CachedNetworkImage(
+                      imageUrl: widget.vehicleDetailModel.vehiclePhotoUrl,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                       fit: BoxFit.fill),
             ),
           ),
@@ -53,24 +57,27 @@ class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 5.5),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(
-              widget.vehicleDetailModel.vin,
-              style: kHeader,
-            ),
-            Text(
-                DateFormat("dd MMM, yyyy")
-                    .format(widget.vehicleDetailModel.date),
-                style: kSecondaryHeader)
-          ]),
+          child: Text(
+            widget.vehicleDetailModel.vin,
+            style: kHeader,
+          ),
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Text(DateFormat("dd MMM, yyyy").format(widget.vehicleDetailModel.date),
+            style: kSecondaryHeader),
+        const SizedBox(
+          height: 6,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             widget.vehicleDetailModel.vehicleMake.isNotEmpty
-                ? Text(widget.vehicleDetailModel.vehicleMake,
-                    style: kSecondaryHeader)
+                ? Expanded(
+                    child: Text(widget.vehicleDetailModel.vehicleMake,
+                        style: kSecondaryHeader),
+                  )
                 : Container(),
             widget.vehicleDetailModel.vehicleModel.isNotEmpty
                 ? Text(widget.vehicleDetailModel.vehicleModel,

@@ -16,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart' as path;
+import 'package:cached_network_image/cached_network_image.dart';
 
 class VehicleDetailPage extends StatefulWidget {
   final VehicleDetailModel? vehicleDetailModel;
@@ -166,11 +167,12 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
 
   Widget _getVehicleImage(BuildContext context) {
     if (_vehicleUrl.isNotEmpty) {
-      return Image.network(
-        _vehicleUrl,
+      return CachedNetworkImage(
+        imageUrl: _vehicleUrl,
         height: 230,
         width: double.infinity,
         fit: BoxFit.fill,
+        errorWidget: (context, url, error) => const Icon(Icons.error),
       );
     }
 

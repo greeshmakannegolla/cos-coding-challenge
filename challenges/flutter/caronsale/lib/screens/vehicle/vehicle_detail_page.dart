@@ -39,11 +39,14 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
   XFile? _imageFile;
   String _vehicleUrl = '';
   final _formKey = GlobalKey<FormState>();
+  bool _isEdit = false;
 
   @override
   void initState() {
     super.initState();
     if (widget.vehicleDetailModel != null) {
+      _isEdit = true;
+
       _vehicleMakeController.text = widget.vehicleDetailModel!.vehicleMake;
       _vehicleModelController.text = widget.vehicleDetailModel!.vehicleModel;
       _vinController.text = widget.vehicleDetailModel!.vin;
@@ -119,12 +122,12 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                       textInputAction: TextInputAction.next,
                       validator: Validator.validateVin,
                       maxLength: 17,
-                      readOnly: _vinController.text.isNotEmpty ? true : false,
-                      decoration: _vinController.text.isEmpty
-                          ? kTextFieldDecoration
-                          : kTextFieldDecoration.copyWith(
+                      readOnly: _isEdit ? true : false,
+                      decoration: _isEdit
+                          ? kTextFieldDecoration.copyWith(
                               fillColor: ColorConstants.kSecondaryTextColor
-                                  .withOpacity(0.2)),
+                                  .withOpacity(0.2))
+                          : kTextFieldDecoration,
                     ),
                     const SizedBox(
                       height: 23,

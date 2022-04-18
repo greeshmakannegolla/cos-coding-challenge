@@ -216,7 +216,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     if (_imageUploadMode == 'gallery') {
       await _openGallery(context);
     } else {
-      _openCamera(context);
+      await _openCamera(context);
     }
 
     if (_imageFile != null) {

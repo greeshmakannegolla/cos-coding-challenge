@@ -21,7 +21,9 @@ class Avatar extends StatelessWidget {
               url!,
             ),
           )
-        : CircleAvatar(
+        :
+        //placeholder if no profile picture exists
+        CircleAvatar(
             radius: radius,
             backgroundColor: ColorConstants.kSecondaryTextColor,
             child: ClipRRect(

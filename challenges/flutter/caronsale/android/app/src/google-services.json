@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "69033719686",
+    "project_id": "cosassessment-495de",
+    "storage_bucket": "cosassessment-495de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:69033719686:android:4023e2d6b70e4f8c7bde07",
+        "android_client_info": {
+          "package_name": "com.example.caronsale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "69033719686-tt2h0dtu3te7p62mbib4scqm9uo95cam.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI9AqtuGpa1ZhZQ9-2H-AOYlTXfjhutB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "69033719686-tt2h0dtu3te7p62mbib4scqm9uo95cam.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "69033719686-s76p173h4j1su469nc4ev6sa4rfjm4eo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.caronsale"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

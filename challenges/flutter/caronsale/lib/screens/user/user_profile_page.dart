@@ -190,9 +190,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
       _groupValue = index as int?;
     });
 
-    FirebaseFirestore.instance.collection('users').doc(kEmail).update({
-      'preferredImagePicker': (_groupValue == 0) ? 'gallery' : 'camera'
-    }); //TODO: Check if profile url also updates on change
+    FirebaseFirestore.instance.collection('users').doc(kEmail).update(
+        {'preferredImagePicker': (_groupValue == 0) ? 'gallery' : 'camera'});
   }
 
   Future<void> _openGallery(BuildContext context) async {

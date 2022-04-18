@@ -7,32 +7,13 @@ import 'package:caronsale/screens/vehicle/vehicle_overview_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginPage extends StatelessWidget {
+  LoginPage({Key? key}) : super(key: key);
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  late TextEditingController _emailController;
-  late TextEditingController _passwordController;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +54,11 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         height: 60,
                       ),
-                      CosTextButton(onPressed: _onLoginPressed, title: 'LOGIN')
+                      CosTextButton(
+                          onPressed: (() {
+                            _onLoginPressed(context);
+                          }),
+                          title: 'LOGIN')
                     ],
                   ),
                 )
@@ -85,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _onLoginPressed() async {
+  _onLoginPressed(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(

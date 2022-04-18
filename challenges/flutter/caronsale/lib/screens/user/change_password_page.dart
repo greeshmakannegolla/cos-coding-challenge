@@ -5,36 +5,14 @@ import 'package:caronsale/widgets/text_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ChangePasswordPage extends StatefulWidget {
-  const ChangePasswordPage({Key? key}) : super(key: key);
+class ChangePasswordPage extends StatelessWidget {
+  ChangePasswordPage({Key? key}) : super(key: key);
 
-  @override
-  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
-}
-
-class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController _currentPasswordController;
-  late TextEditingController _newPasswordController;
-  late TextEditingController _confirmNewPasswordController;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentPasswordController = TextEditingController();
-    _newPasswordController = TextEditingController();
-    _confirmNewPasswordController = TextEditingController();
-  }
-
-  @override
-  dispose() {
-    _currentPasswordController.dispose();
-    _newPasswordController.dispose();
-    _confirmNewPasswordController.dispose();
-
-    super.dispose();
-  }
+  final _currentPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmNewPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +28,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         child: Scaffold(
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
-            floatingActionButton:
-                CosTextButton(onPressed: _onSavePressed, title: "SAVE"),
+            floatingActionButton: CosTextButton(
+                onPressed: () {
+                  _onSavePressed(context);
+                },
+                title: "SAVE"),
             body: Form(
                 key: _formKey,
                 child: Padding(
@@ -96,7 +77,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     );
   }
 
-  void _onSavePressed() async {
+  void _onSavePressed(BuildContext context) async {
     if ((_formKey.currentState?.validate() ?? false) &&
         (_confirmNewPasswordController.text == _newPasswordController.text)) {
       try {

@@ -5,16 +5,11 @@ import 'package:caronsale/models/vehicle_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class VehicleInspectionCard extends StatefulWidget {
+class VehicleInspectionCard extends StatelessWidget {
   final VehicleDetailModel vehicleDetailModel;
   const VehicleInspectionCard(this.vehicleDetailModel, {Key? key})
       : super(key: key);
 
-  @override
-  State<VehicleInspectionCard> createState() => _VehicleInspectionCardState();
-}
-
-class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -33,10 +28,10 @@ class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
             child: SizedBox(
               height: 230,
               width: double.infinity,
-              child: widget.vehicleDetailModel.vehiclePhotoUrl.isEmpty
+              child: vehicleDetailModel.vehiclePhotoUrl.isEmpty
                   ? Image.asset(kDefaultVehicle, fit: BoxFit.fill)
                   : CachedNetworkImage(
-                      imageUrl: widget.vehicleDetailModel.vehiclePhotoUrl,
+                      imageUrl: vehicleDetailModel.vehiclePhotoUrl,
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                       fit: BoxFit.fill),
@@ -58,14 +53,14 @@ class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
         Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 5.5),
           child: Text(
-            widget.vehicleDetailModel.vin,
+            vehicleDetailModel.vin,
             style: kHeader,
           ),
         ),
         const SizedBox(
           height: 6,
         ),
-        Text(DateFormat("dd MMM, yyyy").format(widget.vehicleDetailModel.date),
+        Text(DateFormat("dd MMM, yyyy").format(vehicleDetailModel.date),
             style: kSecondaryHeader),
         const SizedBox(
           height: 6,
@@ -73,15 +68,14 @@ class _VehicleInspectionCardState extends State<VehicleInspectionCard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            widget.vehicleDetailModel.vehicleMake.isNotEmpty
+            vehicleDetailModel.vehicleMake.isNotEmpty
                 ? Expanded(
-                    child: Text(widget.vehicleDetailModel.vehicleMake,
+                    child: Text(vehicleDetailModel.vehicleMake,
                         style: kSecondaryHeader),
                   )
                 : Container(),
-            widget.vehicleDetailModel.vehicleModel.isNotEmpty
-                ? Text(widget.vehicleDetailModel.vehicleModel,
-                    style: kSecondaryHeader)
+            vehicleDetailModel.vehicleModel.isNotEmpty
+                ? Text(vehicleDetailModel.vehicleModel, style: kSecondaryHeader)
                 : Container()
           ],
         ),

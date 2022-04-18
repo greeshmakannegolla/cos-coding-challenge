@@ -168,7 +168,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ChangePasswordPage()),
+                              builder: (context) => ChangePasswordPage()),
                         );
                       },
                       title: "Change Password"),
@@ -244,7 +244,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (ctx) => const LoginPage()),
+          MaterialPageRoute(builder: (ctx) => LoginPage()),
           (Route<dynamic> route) => false);
     } on FirebaseException catch (e) {
       showAlertDialog(context, 'Error', e.toString());

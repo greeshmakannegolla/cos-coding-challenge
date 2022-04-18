@@ -368,15 +368,14 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
   }
 
   void _onCalendarPressed() async {
-    DateTime today = DateTime.now();
     FocusScope.of(context).unfocus();
     await Future.delayed(const Duration(milliseconds: 100));
     var date = await showRoundedDatePicker(
       height: 300,
       context: context,
       initialDate: _entryDate,
-      firstDate: today.subtract(const Duration(days: 365 * 10)),
-      lastDate: today.add(const Duration(days: 365 * 3)),
+      firstDate: _entryDate.subtract(const Duration(days: 365 * 10)),
+      lastDate: _entryDate,
       borderRadius: 16,
       styleDatePicker: MaterialRoundedDatePickerStyle(
           paddingMonthHeader: const EdgeInsets.all(12),
